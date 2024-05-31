@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/godbus/dbus"
-	fprint "github.com/linuxdeepin/go-dbus-factory/net.reactivated.fprint"
+	fprint "github.com/linuxdeepin/go-dbus-factory/system/net.reactivated.fprint"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/dbusutil/proxy"
 )

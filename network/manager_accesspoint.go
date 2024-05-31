@@ -11,7 +11,7 @@ import (
 
 	dbus "github.com/godbus/dbus"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
-	nmdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.networkmanager"
+	nmdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.networkmanager"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/utils"
 )
@@ -28,7 +28,7 @@ const (
 const scanWifiDelayTime = 10 * time.Second
 const channelAutoChangeThreshold = 65
 
-//frequency range
+// frequency range
 const (
 	frequency5GUpperlimit = 5825
 	frequency5GLowerlimit = 4915
@@ -540,7 +540,7 @@ func (m *Manager) activateAccessPoint(uuid string, apPath, devPath dbus.ObjectPa
 		// need to set macAddress
 		var hwAddr string
 		hwAddr, err = nmGeneralGetDeviceHwAddr(devPath, true)
-		if (err != nil) {
+		if err != nil {
 			logger.Warning("failed to get mac", err)
 		}
 		data := newWirelessConnectionData(decodeSsid(ssid), uuid, ssid, keymgmt, hwAddr)

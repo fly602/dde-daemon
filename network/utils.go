@@ -17,11 +17,11 @@ import (
 	"time"
 
 	dbus "github.com/godbus/dbus"
-	nmdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.networkmanager"
-	"github.com/linuxdeepin/go-gir/gio-2.0"
-	"github.com/linuxdeepin/go-lib/utils"
 	"github.com/linuxdeepin/dde-daemon/iw"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
+	nmdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.networkmanager"
+	"github.com/linuxdeepin/go-gir/gio-2.0"
+	"github.com/linuxdeepin/go-lib/utils"
 )
 
 func isStringInArray(s string, list []string) bool {

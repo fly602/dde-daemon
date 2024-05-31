@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/godbus/dbus"
-	inputdevices "github.com/linuxdeepin/go-dbus-factory/com.deepin.system.inputdevices"
+	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.inputdevices"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 

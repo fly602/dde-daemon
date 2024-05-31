@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"github.com/godbus/dbus"
-	"github.com/linuxdeepin/go-dbus-factory/org.freedesktop.login1"
+	"github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"
 )
 
 func (m *Grub2) enableShutdown() {

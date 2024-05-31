@@ -6,7 +6,7 @@ package network
 
 import (
 	"github.com/godbus/dbus"
-	nmdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.networkmanager"
+	nmdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.networkmanager"
 )
 
 type connectionData map[string]map[string]dbus.Variant
@@ -101,7 +101,6 @@ func setSettingIP4ConfigNeverDefault(data connectionData, value bool) {
 func setSettingIP6ConfigMethod(data connectionData, value string) {
 	setSettingKey(data, "ipv6", "method", value)
 }
-
 
 func nmGetDeviceInterface(devPath dbus.ObjectPath) (devInterface string) {
 	d, err := nmNewDevice(devPath)

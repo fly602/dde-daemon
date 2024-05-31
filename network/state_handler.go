@@ -10,7 +10,7 @@ import (
 
 	dbus "github.com/godbus/dbus"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
-	nmdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.networkmanager"
+	nmdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.networkmanager"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	. "github.com/linuxdeepin/go-lib/gettext"
 )
@@ -283,7 +283,7 @@ func (sh *stateHandler) watch(path dbus.ObjectPath) {
 				// 如果禁用了失败的消息，则不提示失败消息
 				return
 			}
-			
+
 			// ignore device removed signals for that could not
 			// query related information correct
 			if reason == nm.NM_DEVICE_STATE_REASON_REMOVED {

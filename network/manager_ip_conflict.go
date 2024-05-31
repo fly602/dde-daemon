@@ -9,8 +9,8 @@ import (
 	"time"
 
 	dbus "github.com/godbus/dbus"
-	ipwatchd "github.com/linuxdeepin/go-dbus-factory/com.deepin.system.ipwatchd"
-	ofdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.dbus"
+	ipwatchd "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.ipwatchd"
+	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 

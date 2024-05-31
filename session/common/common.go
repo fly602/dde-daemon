@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/godbus/dbus"
-	ofdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.dbus"
+	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"
 )
 
 func ActivateSysDaemonService(serviceName string) error {

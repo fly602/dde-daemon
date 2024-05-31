@@ -7,7 +7,7 @@ package dock
 import (
 	"time"
 
-	kwayland "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.kwayland"
+	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
 	x "github.com/linuxdeepin/go-x11-client"
 )
 

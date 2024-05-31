@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"os"
 	"os/exec"
 	"strconv"
@@ -19,8 +20,8 @@ import (
 
 	"github.com/godbus/dbus"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
-	ofdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.dbus"
-	secrets "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.secrets"
+	ofdbus "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.dbus"
+	secrets "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.secrets"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/strv"
 )

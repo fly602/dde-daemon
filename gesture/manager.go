@@ -7,6 +7,7 @@ package gesture
 import (
 	"encoding/json"
 	"fmt"
+
 	"io/ioutil"
 	"math"
 	"os"
@@ -16,15 +17,15 @@ import (
 	"sync"
 
 	"github.com/godbus/dbus"
-	daemon "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.daemon"
-	display "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.display"
-	gesture "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.gesture"
-	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.sessionwatcher"
-	clipboard "github.com/linuxdeepin/go-dbus-factory/com.deepin.dde.clipboard"
-	dock "github.com/linuxdeepin/go-dbus-factory/com.deepin.dde.daemon.dock"
-	notification "github.com/linuxdeepin/go-dbus-factory/com.deepin.dde.notification"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/com.deepin.sessionmanager"
-	wm "github.com/linuxdeepin/go-dbus-factory/com.deepin.wm"
+	dock "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.daemon.dock"
+	notification "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.notification"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	wm "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wm"
+	clipboard "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.clipboard1"
+	display "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.display1"
+	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionwatcher1"
+	gesture "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.gesture"
+	daemon "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.daemon1"
 	gio "github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/dbusutil/proxy"
@@ -649,7 +650,7 @@ func (m *Manager) getTouchScreenRotationContext() (context *touchEventContext, p
 	return
 }
 
-//param @edge: swipe to touchscreen edge
+// param @edge: swipe to touchscreen edge
 // edge: 该手势来自屏幕的哪条边
 // p:    该手势的终点
 func (m *Manager) handleTouchEdgeMoveStopLeave(context *touchEventContext, edge string, p *point, duration int32) error {
@@ -734,7 +735,7 @@ func (m *Manager) handleTouchMovementEvent(context *touchEventContext, direction
 	return nil
 }
 
-//touchpad double click down
+// touchpad double click down
 func (m *Manager) handleDbclickDown(fingers int32) error {
 	if fingers == 3 {
 		return m.wm.TouchToMove(0, 0, 0)
@@ -742,7 +743,7 @@ func (m *Manager) handleDbclickDown(fingers int32) error {
 	return nil
 }
 
-//touchpad swipe move
+// touchpad swipe move
 func (m *Manager) handleSwipeMoving(fingers int32, accelX float64, accelY float64) error {
 	if fingers == 3 {
 		return m.wm.TouchToMove(0, int32(accelX), int32(accelY))
@@ -750,7 +751,7 @@ func (m *Manager) handleSwipeMoving(fingers int32, accelX float64, accelY float6
 	return nil
 }
 
-//touchpad swipe stop or interrupted
+// touchpad swipe stop or interrupted
 func (m *Manager) handleSwipeStop(fingers int32) error {
 	if fingers == 3 {
 		return m.wm.ClearMoveStatus(0)

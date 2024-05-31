@@ -14,7 +14,7 @@ import (
 	"sync"
 
 	"github.com/godbus/dbus"
-	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.sessionwatcher"
+	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionwatcher1"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/keyfile"
 	dutils "github.com/linuxdeepin/go-lib/utils"

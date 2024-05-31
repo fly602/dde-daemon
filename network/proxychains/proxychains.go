@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	proxy "github.com/linuxdeepin/go-dbus-factory/com.deepin.system.proxy"
+	proxy "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.proxy"
 
 	dbus "github.com/godbus/dbus"
 	"github.com/linuxdeepin/go-lib/dbusutil"

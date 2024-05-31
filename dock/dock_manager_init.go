@@ -10,14 +10,14 @@ import (
 	"time"
 
 	"github.com/godbus/dbus"
-	libApps "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.apps"
-	kwayland "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.kwayland"
-	kwin "github.com/linuxdeepin/go-dbus-factory/org.kde.kwin"
-	launcher "github.com/linuxdeepin/go-dbus-factory/com.deepin.dde.daemon.launcher"
-	libDDELauncher "github.com/linuxdeepin/go-dbus-factory/com.deepin.dde.launcher"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/com.deepin.sessionmanager"
-	wm "github.com/linuxdeepin/go-dbus-factory/com.deepin.wm"
-	wmswitcher "github.com/linuxdeepin/go-dbus-factory/com.deepin.wmswitcher"
+	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
+	launcher "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.daemon.launcher"
+	libDDELauncher "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.launcher"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	wm "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wm"
+	wmswitcher "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wmswitcher"
+	kwin "github.com/linuxdeepin/go-dbus-factory/session/org.kde.kwin"
+	libApps "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.apps"
 	gio "github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/gsettings"
@@ -291,7 +291,7 @@ func (m *Manager) init() error {
 	m.startManager = sessionmanager.NewStartManager(sessionBus)
 	m.wmSwitcher = wmswitcher.NewWMSwitcher(sessionBus)
 	m.kwin = kwin.NewKWin(sessionBus)
-	
+
 	sessionType := os.Getenv("XDG_SESSION_TYPE")
 	if strings.Contains(sessionType, "wayland") {
 		m.isWaylandSession = true

@@ -14,7 +14,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	dbus "github.com/godbus/dbus"
-	login1 "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.login1"
+	login1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 
@@ -256,7 +256,7 @@ func (r *ALRecorder) watchAppsDir(uid int, home, appsDir string) {
 	r.subRecorders[appsDir] = sr
 }
 
-//判断filename是否是符号链接
+// 判断filename是否是符号链接
 func isSymlink(filename string) bool {
 	fileInfo, err := os.Lstat(filename)
 	if err != nil {
@@ -265,7 +265,7 @@ func isSymlink(filename string) bool {
 	return fileInfo.Mode()&os.ModeSymlink != 0
 }
 
-//获取path所有子path
+// 获取path所有子path
 func getPathDirs(filename string) (ret []string) {
 	for {
 		ret = append(ret, filename)

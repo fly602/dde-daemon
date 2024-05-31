@@ -16,14 +16,14 @@ import (
 	"github.com/linuxdeepin/dde-daemon/network/nm"
 	"github.com/linuxdeepin/dde-daemon/network/proxychains"
 	"github.com/linuxdeepin/dde-daemon/session/common"
-	airplanemode "github.com/linuxdeepin/go-dbus-factory/com.deepin.daemon.airplanemode"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/com.deepin.sessionmanager"
-	ipwatchd "github.com/linuxdeepin/go-dbus-factory/com.deepin.system.ipwatchd"
-	sysNetwork "github.com/linuxdeepin/go-dbus-factory/com.deepin.system.network"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
-	login1 "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.login1"
-	nmdbus "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.networkmanager"
-	secrets "github.com/linuxdeepin/go-dbus-factory/org.freedesktop.secrets"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	secrets "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.secrets"
+	ipwatchd "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.ipwatchd"
+	sysNetwork "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.network"
+	airplanemode "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.airplanemode1"
+	login1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"
+	nmdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.networkmanager"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/dbusutil/proxy"
 	"github.com/linuxdeepin/go-lib/keyfile"
@@ -44,11 +44,11 @@ const (
 	dsettingsResetWifiOSDEnableTimeout = "resetWifiOSDEnableTimeout"
 	dsettingsDisableFailureNotify      = "disableFailureNotify"
 
-	networkCoreDsgConfigPath   = "/usr/share/dsg/configs/org.deepin.dde.network/org.deepin.dde.network.json"
-	networkCoreConfigPath      = "org.deepin.dde.network"
-	ddeNetworkCoreConfigPath   = networkCoreConfigPath
-	dsettingsLoadServiceFromNM = "LoadServiceFromNM"
-	dsettingsEnableConnectivity= "enableConnectivity"
+	networkCoreDsgConfigPath    = "/usr/share/dsg/configs/org.deepin.dde.network/org.deepin.dde.network.json"
+	networkCoreConfigPath       = "org.deepin.dde.network"
+	ddeNetworkCoreConfigPath    = networkCoreConfigPath
+	dsettingsLoadServiceFromNM  = "LoadServiceFromNM"
+	dsettingsEnableConnectivity = "enableConnectivity"
 )
 
 const checkRepeatTime = 1 * time.Second
@@ -136,7 +136,7 @@ type Manager struct {
 	delayShowWifiOSD          *time.Timer
 
 	// dsg config : org.deepin.dde.network : LoadServiceFromNM
-	loadServiceFromNM bool
+	loadServiceFromNM       bool
 	enableLocalConnectivity bool
 
 	//nolint
@@ -487,13 +487,13 @@ func (m *Manager) loadEnableConnectivity(ds configManager.ConfigManager) {
 	networkCoreConfigManagerPath, err := ds.AcquireManager(0, networkCoreConfigPath, ddeNetworkCoreConfigPath, "")
 	if err != nil {
 		logger.Warning(err)
-		return;
+		return
 	}
 
 	networkCoreConfigManager, err := configManager.NewManager(m.sysSigLoop.Conn(), networkCoreConfigManagerPath)
 	if err != nil {
 		logger.Warning(err)
-		return;
+		return
 	}
 
 	getDEnableLocalConnectivity := func() bool {
@@ -510,10 +510,10 @@ func (m *Manager) loadEnableConnectivity(ds configManager.ConfigManager) {
 	networkCoreConfigManager.InitSignalExt(m.sysSigLoop, true)
 	_, err = networkCoreConfigManager.ConnectValueChanged(func(key string) {
 		if key == dsettingsEnableConnectivity {
-				m.enableLocalConnectivity = getDEnableLocalConnectivity()
-				logger.Info("DConfig data changed of enableConnectivity : ", m.enableLocalConnectivity)
-			}
-		})
+			m.enableLocalConnectivity = getDEnableLocalConnectivity()
+			logger.Info("DConfig data changed of enableConnectivity : ", m.enableLocalConnectivity)
+		}
+	})
 
 	if err != nil {
 		logger.Warning(err)
