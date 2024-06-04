@@ -211,9 +211,9 @@ func (m *Manager) setDPMSModeOff() {
 }
 
 const (
-	lockFrontServiceName = "com.deepin.dde.lockFront"
+	lockFrontServiceName = "org.deepin.dde.LockFront1"
 	lockFrontIfc         = lockFrontServiceName
-	lockFrontObjPath     = "/com/deepin/dde/lockFront"
+	lockFrontObjPath     = "/org/deepin/dde/LockFront1"
 )
 
 func (m *Manager) tryChangeDeepinWM() bool {
