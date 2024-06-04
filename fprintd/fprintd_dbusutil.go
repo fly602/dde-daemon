@@ -3,7 +3,7 @@
 package fprintd
 
 import (
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 )
 
 func (v *Manager) setPropDevices(value []dbus.ObjectPath) {

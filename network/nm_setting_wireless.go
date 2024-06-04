@@ -7,7 +7,7 @@ package network
 import (
 	"os"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
 )
 
@@ -50,7 +50,7 @@ func newWirelessConnectionData(id, uuid string, ssid []byte, keymgmt, macAddress
 	}
 
 	if macAddress != "" {
-		setSettingWirelessMacAddress(data, convertMacAddressToArrayByte(macAddress));
+		setSettingWirelessMacAddress(data, convertMacAddressToArrayByte(macAddress))
 	}
 
 	initSettingSectionIpv4(data)

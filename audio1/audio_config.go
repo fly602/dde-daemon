@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"time"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	soundthemeplayer "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.api.soundthemeplayer"
 	"github.com/linuxdeepin/go-lib/asound"
 	"github.com/linuxdeepin/go-lib/pulse"

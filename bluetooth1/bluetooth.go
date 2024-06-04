@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	btcommon "github.com/linuxdeepin/dde-daemon/common/bluetooth"
 	audio "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.audio1"
 	mpris2 "github.com/linuxdeepin/go-dbus-factory/session/org.mpris.mediaplayer2"

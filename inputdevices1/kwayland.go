@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-api/dxinput"
 	"github.com/linuxdeepin/dde-api/dxinput/common"
 	"github.com/linuxdeepin/dde-api/dxinput/kwayland"

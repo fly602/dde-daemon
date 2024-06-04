@@ -22,7 +22,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/accounts1/users"
 	authenticate "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.authenticate"
 	login1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"

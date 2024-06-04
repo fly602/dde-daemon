@@ -9,9 +9,9 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/mime"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	"github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/appinfo/desktopappinfo"
 )

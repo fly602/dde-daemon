@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	dutils "github.com/linuxdeepin/go-lib/utils"
@@ -99,7 +99,7 @@ func (m *InputDevices) init() {
 	}()
 }
 
-//Note：由于数组默认长度为0，后面append时，需要重新申请内存和拷贝，所以效率较低
+// Note：由于数组默认长度为0，后面append时，需要重新申请内存和拷贝，所以效率较低
 func getMapKeys(m map[string]string) []string {
 	keys := []string{}
 	for k := range m {
@@ -247,7 +247,7 @@ func (m *InputDevices) initDSettings(sysBus *dbusutil.Service) {
 	}
 }
 
-//通过map不能将相同数据添加进去，append数据后计算map长度来确认重复数据
+// 通过map不能将相同数据添加进去，append数据后计算map长度来确认重复数据
 func getDeleteData(truthValue, mapValue []string) (ret []string) {
 	if len(truthValue) < len(mapValue) {
 		tmpArr := make(map[string]int)

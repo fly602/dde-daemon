@@ -7,7 +7,7 @@ package power
 import (
 	"time"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	gio "github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil/gsprop"
 	"github.com/linuxdeepin/go-lib/gsettings"
@@ -31,7 +31,6 @@ func (c *warnLevelConfig) isValid() bool {
 	if c.LowTime > c.DangerTime &&
 		c.DangerTime > c.CriticalTime &&
 		c.CriticalTime > c.ActionTime &&
-
 		c.remindPercentage > c.LowPercentage &&
 		c.LowPercentage > c.DangerPercentage &&
 		c.DangerPercentage > c.CriticalPercentage &&

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"sync"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
 	x "github.com/linuxdeepin/go-x11-client"
 )

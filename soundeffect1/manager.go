@@ -11,7 +11,7 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-api/soundutils"
 	soundthemeplayer "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.api.soundthemeplayer"
 	"github.com/linuxdeepin/go-gir/gio-2.0"

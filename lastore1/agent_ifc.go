@@ -10,7 +10,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )

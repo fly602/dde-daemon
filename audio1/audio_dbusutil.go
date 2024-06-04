@@ -3,7 +3,7 @@
 package audio
 
 import (
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 )
 
 func (v *Audio) setPropSinkInputs(value []dbus.ObjectPath) (changed bool) {

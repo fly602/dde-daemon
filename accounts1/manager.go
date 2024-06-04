@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"time"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
 	udcp "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.udcp.iam"
 	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"

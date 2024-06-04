@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	launcher "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.daemon.launcher"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	power "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.power1"
 )
 

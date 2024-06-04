@@ -18,7 +18,7 @@ import (
 
 	dutils "github.com/linuxdeepin/go-lib/utils"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	notifications "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.notifications"
 	obex "github.com/linuxdeepin/go-dbus-factory/system/org.bluez.obex"
 	"github.com/linuxdeepin/go-lib/dbusutil"

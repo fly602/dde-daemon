@@ -10,15 +10,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 
-const(
-    touchpadSwitchFile = "/proc/uos/touchpad_switch"
-    touchpadDBusPath = "/com/deepin/system/InputDevices/Touchpad"
-    touchpadDBusInterface = "com.deepin.system.InputDevices.Touchpad"
+const (
+	touchpadSwitchFile    = "/proc/uos/touchpad_switch"
+	touchpadDBusPath      = "/com/deepin/system/InputDevices/Touchpad"
+	touchpadDBusInterface = "com.deepin.system.InputDevices.Touchpad"
 )
 
 type Touchpad struct {
@@ -28,7 +28,7 @@ type Touchpad struct {
 }
 
 func newTouchpad(service *dbusutil.Service) *Touchpad {
-	t := &Touchpad {
+	t := &Touchpad{
 		service: service,
 	}
 	err := TouchpadExist(touchpadSwitchFile)
@@ -71,13 +71,13 @@ func (t *Touchpad) setTouchpadEnable(enabled bool) error {
 		arg = "disable"
 	}
 	err = ioutil.WriteFile(touchpadSwitchFile, []byte(arg), 0644)
-	if err != nil{
+	if err != nil {
 		logger.Warning(" ioutil.WriteFile err : ", err)
 		return err
 	}
 	t.setPropEnable(enabled)
 	err = setDsgConf(enabled)
-	if err != nil{
+	if err != nil {
 		logger.Warning(err)
 		return err
 	}
@@ -124,7 +124,7 @@ func TouchpadExist(filePath string) error {
 	_, err := os.Stat(touchpadSwitchFile)
 	if err != nil {
 		logger.Warning(err)
-		return err 
+		return err
 	}
 	return nil
 }

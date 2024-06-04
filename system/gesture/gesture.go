@@ -12,7 +12,7 @@ package gesture
 import "C"
 
 import (
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/loader"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/log"
@@ -231,13 +231,13 @@ func (*Manager) GetInterfaceName() string {
 	return dbusInterface
 }
 
-//duration unit ms
+// duration unit ms
 func (*Manager) SetShortPressDuration(duration int) *dbus.Error {
 	C.set_timer_short_duration(C.int(duration))
 	return nil
 }
 
-//duration unit ms
+// duration unit ms
 func (*Manager) SetEdgeMoveStopDuration(duration int) *dbus.Error {
 	C.set_edge_move_stop_time(C.int(duration))
 	return nil
@@ -248,7 +248,8 @@ func (*Manager) SetInputIgnore(node string, isIgnore bool) *dbus.Error {
 	return nil
 }
 
-//touchpad gesture
+// touchpad gesture
+//
 //export handleGestureEvent
 func handleGestureEvent(ty, direction, fingers C.int) {
 	err := _m.service.Emit(_m, "Event", GestureType(ty).String(),
@@ -284,7 +285,8 @@ func handleSwipeStop(fingers C.int) {
 	}
 }
 
-//touchscreen gesture
+// touchscreen gesture
+//
 //export handleTouchEvent
 func handleTouchEvent(ty, btn C.int) {
 	err := _m.service.Emit(_m, "Event", TouchType(ty).String(),

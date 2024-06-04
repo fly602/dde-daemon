@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	ddbus "github.com/linuxdeepin/dde-daemon/dbus"
 	"github.com/linuxdeepin/dde-daemon/session/common"
 	timedated "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.timedated"

@@ -14,7 +14,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/keybinding1/util"
 	wm "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wm"
 	daemon "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.daemon1"

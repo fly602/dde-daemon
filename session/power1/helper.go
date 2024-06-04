@@ -5,7 +5,7 @@
 package power
 
 import (
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	notifications "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.notifications"
 	"github.com/linuxdeepin/go-lib/dbusutil/proxy"
 
@@ -19,7 +19,7 @@ import (
 
 	// session bus
 	display "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.display"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.sessionmanager"
+	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionwatcher1"
 	screensaver "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.screensaver"
 	"github.com/linuxdeepin/go-lib/dbusutil"

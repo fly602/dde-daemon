@@ -7,7 +7,7 @@ package audio
 import (
 	"encoding/json"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	soundthemeplayer "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.api.soundthemeplayer"
 	gio "github.com/linuxdeepin/go-gir/gio-2.0"
 )

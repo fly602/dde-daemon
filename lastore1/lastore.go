@@ -7,7 +7,7 @@ package lastore
 import (
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/common/dsync"
 	eventLog "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.EventLog"
 	network "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.network"

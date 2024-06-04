@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/network/nm"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	. "github.com/linuxdeepin/go-lib/gettext"
@@ -99,7 +99,7 @@ type hotspotConnectionInfo struct {
 }
 
 func (i ipv4Info) toDeprecatedStruct() ip4ConnectionInfoDeprecated {
-	ip4ConnectionInfoDeprecatedInfo := ip4ConnectionInfoDeprecated {
+	ip4ConnectionInfoDeprecatedInfo := ip4ConnectionInfoDeprecated{
 		Gateways: []string{i.Gateway},
 		Dnses:    i.Nameservers,
 	}
@@ -111,7 +111,7 @@ func (i ipv4Info) toDeprecatedStruct() ip4ConnectionInfoDeprecated {
 }
 
 func (i ipv6Info) toDeprecatedStruct() ip6ConnectionInfoDeprecated {
-	ip6ConnectionInfoDeprecatedInfo := ip6ConnectionInfoDeprecated {
+	ip6ConnectionInfoDeprecatedInfo := ip6ConnectionInfoDeprecated{
 		Gateways: []string{i.Gateway},
 		Dnses:    i.Nameservers,
 	}

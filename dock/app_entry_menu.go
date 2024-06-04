@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	. "github.com/linuxdeepin/go-lib/gettext"
 	"github.com/linuxdeepin/go-lib/strv"
 	_ "github.com/linuxdeepin/go-x11-client"
@@ -135,7 +135,7 @@ func (entry *AppEntry) getMenuItemForceQuit() *MenuItem {
 	}, active)
 }
 
-//dock栏上Android程序的Force Quit功能
+// dock栏上Android程序的Force Quit功能
 func (entry *AppEntry) getMenuItemForceQuitAndroid() *MenuItem {
 	active := entry.manager.forceQuitAppStatus != forceQuitAppDeactivated
 

@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.inputdevices"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )

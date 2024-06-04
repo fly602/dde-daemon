@@ -8,7 +8,7 @@ import (
 	"github.com/linuxdeepin/dde-daemon/network"
 	"syscall"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	daemon "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.daemon1"
 	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"
 	login1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"

@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	x "github.com/linuxdeepin/go-x11-client"
 )
 

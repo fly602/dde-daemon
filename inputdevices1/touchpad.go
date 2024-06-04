@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
 	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.inputdevices"
 	power "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.power1"

@@ -14,7 +14,7 @@ import (
 
 	"github.com/linuxdeepin/go-lib/strv"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	btcommon "github.com/linuxdeepin/dde-daemon/common/bluetooth"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 	"github.com/linuxdeepin/go-lib/gettext"

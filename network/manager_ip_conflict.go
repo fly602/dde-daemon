@@ -8,7 +8,7 @@ import (
 	"context"
 	"time"
 
-	dbus "github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 	ipwatchd "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.ipwatchd"
 	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"
 	"github.com/linuxdeepin/go-lib/dbusutil"

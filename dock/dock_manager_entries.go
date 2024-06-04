@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"sort"
 
-	dbus "github.com/godbus/dbus"
-	"github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
+	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/session/common"
+	"github.com/linuxdeepin/go-x11-client/util/wm/ewmh"
 )
 
 func (m *Manager) allocEntryId() string {

@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/loader"
 	ConfigManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
 	notifications "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.notification"

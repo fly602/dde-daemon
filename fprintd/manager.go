@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	huawei_fprint "github.com/linuxdeepin/go-dbus-factory/system/com.huawei.fingerprint"
 	fprint "github.com/linuxdeepin/go-dbus-factory/system/net.reactivated.fprint"
 	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"

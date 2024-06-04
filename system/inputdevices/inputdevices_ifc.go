@@ -5,7 +5,7 @@
 package inputdevices
 
 import (
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 
@@ -13,4 +13,3 @@ func (m *InputDevices) SetWakeupDevices(sender dbus.Sender, path string, value s
 	err := m.setWakeupDevices(path, value)
 	return dbusutil.ToError(err)
 }
-

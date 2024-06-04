@@ -5,7 +5,7 @@
 package dock
 
 import (
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	bamf "github.com/linuxdeepin/go-dbus-factory/session/org.ayatana.bamf"
 	x "github.com/linuxdeepin/go-x11-client"
 )
