@@ -32,9 +32,9 @@ import (
 )
 
 const (
-	dbusServiceName = "com.deepin.daemon.Network"
-	dbusPath        = "/com/deepin/daemon/Network"
-	dbusInterface   = "com.deepin.daemon.Network"
+	dbusServiceName = "org.deepin.dde.Network1"
+	dbusPath        = "/org/deepin/dde/Network1"
+	dbusInterface   = dbusServiceName
 )
 
 const (

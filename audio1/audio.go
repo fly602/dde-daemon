@@ -42,8 +42,8 @@ const (
 	gsKeyEnabled         = "enabled"
 	gsKeyDisableAutoMute = "disable-auto-mute"
 
-	dbusServiceName = "com.deepin.daemon.Audio1"
-	dbusPath        = "/com/deepin/daemon/Audio1"
+	dbusServiceName = "org.deepin.dde.Audio1"
+	dbusPath        = "/org/deepin/dde/Audio1"
 	dbusInterface   = dbusServiceName
 
 	cmdSystemctl  = "systemctl"

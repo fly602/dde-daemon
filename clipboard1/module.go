@@ -13,7 +13,10 @@ import (
 	"github.com/linuxdeepin/go-x11-client/ext/xfixes"
 )
 
-const dbusServiceName = "org.deepin.dde.ClipboardManager1"
+const (
+	dbusServiceName = "org.deepin.dde.ClipboardManager1"
+	dbusPath        = "/org/deepin/dde/ClipboardManager1"
+)
 
 var logger *log.Logger
 
@@ -65,7 +68,7 @@ func (mo *Module) Start() error {
 	}
 
 	service := loader.GetService()
-	err = service.Export("/com/deepin/daemon/ClipboardManager1", m)
+	err = service.Export(dbusPath, m)
 	if err != nil {
 		return err
 	}

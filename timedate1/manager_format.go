@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	dbusFormatPath        = "/com/deepin/daemon/Format"
-	dbusFormatInterface   = "com.deepin.daemon.Format"
+	dbusFormatPath        = "/org/deepin/dde/Format"
+	dbusFormatInterface   = "org.deepin.dde.Format"
 	configManagerId       = "org.desktopspec.ConfigManager"
 	dbusFormatServiceName = dbusFormatInterface
 )
