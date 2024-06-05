@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"github.com/godbus/dbus/v5"
-	launcher "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.daemon.launcher"
-	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	power "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.power1"
 )
 
@@ -472,14 +470,7 @@ func (m *Manager) handleOpenDeviceManager() {
 		return
 	}
 
-	launcher := launcher.NewLauncher(m.service.Conn())
-	info, err := launcher.GetItemInfo(0, "deepin-devicemanager")
-	if err != nil {
-		logger.Warning(err)
-		return
-	}
-	sessionmanager := sessionmanager.NewStartManager(m.service.Conn())
-	_, err = sessionmanager.Launch(0, info.Path)
+	err := m.execCmd("deepin-devicemanager", true)
 	if err != nil {
 		logger.Warning(err)
 	}
