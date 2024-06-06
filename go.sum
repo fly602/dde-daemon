@@ -7,8 +7,8 @@ github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394/go.mod h1:Q8n74mJTIg
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/fly602/go-dbus-factory v0.0.0-20240604094229-0a78e1793397 h1:UUfURoaWkEGOB416yd2gN0Ai/T8kBmS8bNOyu7MK/yc=
-github.com/fly602/go-dbus-factory v0.0.0-20240604094229-0a78e1793397/go.mod h1:lYy+wDjatVx1qdDLINIVUDBeG54qxU2fn2xqGFix3Fs=
+github.com/fly602/go-dbus-factory v0.0.0-20240606080306-3304c0f6fb88 h1:GFxImJGupjyoXCWYh2TmKovcpnHk+rI/mwK9uLtSpPQ=
+github.com/fly602/go-dbus-factory v0.0.0-20240606080306-3304c0f6fb88/go.mod h1:lYy+wDjatVx1qdDLINIVUDBeG54qxU2fn2xqGFix3Fs=
 github.com/fsnotify/fsnotify v1.5.4/go.mod h1:OVB6XrOHzAwXMpEM7uPOzcehqUV2UqJxmVXmkdnm1bU=
 github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nosvA=
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=

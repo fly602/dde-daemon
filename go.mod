@@ -47,4 +47,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/linuxdeepin/go-dbus-factory => github.com/fly602/go-dbus-factory v0.0.0-20240604094229-0a78e1793397
+replace github.com/linuxdeepin/go-dbus-factory => github.com/fly602/go-dbus-factory v0.0.0-20240606080306-3304c0f6fb88
