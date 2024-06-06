@@ -22,7 +22,7 @@ const (
 	sessionAgentPath      = "/com/deepin/lastore/agent"
 )
 
-// 对应com.deepin.daemon.Network.GetProxy方法的key值
+// 对应org.deepin.dde.Network1.GetProxy方法的key值
 const (
 	proxyTypeHttp  = "http"
 	proxyTypeHttps = "https"

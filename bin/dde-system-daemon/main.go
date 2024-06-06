@@ -54,8 +54,8 @@ type Daemon struct {
 }
 
 const (
-	dbusServiceName = "com.deepin.daemon.Daemon"
-	dbusPath        = "/com/deepin/daemon/Daemon"
+	dbusServiceName = "org.deepin.dde.Daemon1"
+	dbusPath        = "/org/deepin/dde/Daemon1"
 	dbusInterface   = dbusServiceName
 )
 

@@ -235,7 +235,7 @@ func (m *Manager) init() {
 
 		// register secret agent
 		nmAgentManager := nmdbus.NewAgentManager(systemBus)
-		err = nmAgentManager.Register(0, "com.deepin.daemon.network.SecretAgent")
+		err = nmAgentManager.Register(0, "org.deepin.dde.Network1.SecretAgent")
 		if err != nil {
 			logger.Debug("failed to register secret agent:", err)
 		} else {

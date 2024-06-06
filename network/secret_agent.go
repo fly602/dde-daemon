@@ -1255,5 +1255,5 @@ type SecretAgentSession struct {
 }
 
 func (*SecretAgentSession) GetInterfaceName() string {
-	return "com.deepin.daemon.Network.SecretAgent"
+	return "org.deepin.dde.Network1.SecretAgent"
 }

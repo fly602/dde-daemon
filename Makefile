@@ -52,9 +52,9 @@ TEST = \
     ${GOPKG_PREFIX}/inputdevices \
     ${GOPKG_PREFIX}/inputdevices/iso639 \
     ${GOPKG_PREFIX}/iw \
-    ${GOPKG_PREFIX}/keybinding \
-    ${GOPKG_PREFIX}/keybinding/shortcuts \
-    ${GOPKG_PREFIX}/keybinding/util \
+    ${GOPKG_PREFIX}/keybinding1 \
+    ${GOPKG_PREFIX}/keybinding1/shortcuts \
+    ${GOPKG_PREFIX}/keybinding1/util \
     ${GOPKG_PREFIX}/langselector1 \
     ${GOPKG_PREFIX}/lastore1 \
     ${GOPKG_PREFIX}/loader \
@@ -106,7 +106,8 @@ BINARIES =  \
 	    dde-lockservice \
 	    dde-authority \
 	    default-terminal \
-	    dde-greeter-setter
+	    dde-greeter-setter \
+	    default-file-manager
 
 LANGUAGES = $(basename $(notdir $(wildcard misc/po/*.po)))
 
@@ -122,9 +123,6 @@ prepare:
 out/bin/%: prepare
 	env GOPATH="${CURDIR}/${GOPATH_DIR}:${GOPATH}" ${GOBUILD} -o $@ ${GOBUILD_OPTIONS} ${GOPKG_PREFIX}/bin/${@F}
 
-out/bin/default-file-manager: bin/default-file-manager/main.c
-	gcc $^ $(shell pkg-config --cflags --libs gio-unix-2.0) $(CFLAGS) -o $@
-
 out/bin/desktop-toggle: bin/desktop-toggle/main.c
 	gcc $^ $(shell pkg-config --cflags --libs x11) $(CFLAGS) -o $@
 
@@ -137,22 +135,21 @@ translate: $(addsuffix /LC_MESSAGES/dde-daemon.mo, $(addprefix out/locale/, ${LA
 pot:
 	deepin-update-pot misc/po/locale_config.ini
 
-POLICIES=accounts Grub2 Fprintd
+POLICIES=accounts grub2 fprintd
 ts:
 	for i in $(POLICIES); do \
-		deepin-policy-ts-convert policy2ts misc/polkit-action/com.deepin.daemon.$$i.policy.in misc/ts/com.deepin.daemon.$$i.policy; \
+		deepin-policy-ts-convert policy2ts misc/polkit-action/org.deepin.dde.$$i.policy.in misc/ts/org.deepin.dde.$$i.policy; \
 	done
 
 ts_to_policy:
 	for i in $(POLICIES); do \
-	deepin-policy-ts-convert ts2policy misc/polkit-action/com.deepin.daemon.$$i.policy.in misc/ts/com.deepin.daemon.$$i.policy misc/polkit-action/com.deepin.daemon.$$i.policy; \
+	deepin-policy-ts-convert ts2policy misc/polkit-action/org.deepin.dde.$$i.policy.in misc/ts/org.deepin.dde.$$i.policy misc/polkit-action/org.deepin.dde.$$i.policy; \
 	done
 
 build: prepare out/bin/default-terminal out/bin/default-file-manager out/bin/desktop-toggle $(addprefix out/bin/, ${BINARIES}) ts_to_policy icons translate
 
 test: prepare
-	env GOPATH="${CURDIR}/${GOPATH_DIR}:${GOPATH}" go test -v ./...
-
+	env GOPATH="${CURDIR}/${GOPATH_DIR}:${GOPATH}" go test -v ${TEST}
 test-coverage: prepare
 	env GOPATH="${CURDIR}/${GOPATH_DIR}:${GOPATH}" go test -cover -v ./... | awk '$$2 ~ "_${CURDIR}" {print $$2","$$5}' | sed "s:${CURDIR}::g" | sed 's/files\]/0\.0%/g' > coverage.csv
 
@@ -183,8 +180,14 @@ install: build install-dde-data install-icons
 	cp -r misc/dde-daemon/*   ${DESTDIR}${PREFIX}/share/dde-daemon/
 	cp -r misc/usr/share/deepin ${DESTDIR}${PREFIX}/share/
 
+	mkdir -pv ${DESTDIR}/lib/systemd/user/
+	cp -f misc/systemd/services/* ${DESTDIR}/lib/systemd/user/
+
+	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/user/dde-session-initialized.target.wants/
+	ln -s $(PREFIX)/lib/systemd/user/org.dde.session.Daemon1.service $(DESTDIR)$(PREFIX)/lib/systemd/user/dde-session-initialized.target.wants/org.dde.session.Daemon1.service
+
 	mkdir -pv ${DESTDIR}/lib/systemd/system/
-	cp -f misc/systemd/services/* ${DESTDIR}/lib/systemd/system/
+	cp -f misc/systemd/system-services/* ${DESTDIR}/lib/systemd/system/
 
 	mkdir -pv ${DESTDIR}/etc/pam.d/
 	cp -f misc/etc/pam.d/* ${DESTDIR}/etc/pam.d/
@@ -207,9 +210,8 @@ install: build install-dde-data install-icons
 	mkdir -pv ${DESTDIR}/lib/udev/rules.d
 	cp -f misc/udev-rules/*.rules ${DESTDIR}/lib/udev/rules.d/
 
-	mkdir -pv ${DESTDIR}/usr/lib/deepin-daemon/service-trigger
-	cp -f misc/service-trigger/*.json ${DESTDIR}/usr/lib/deepin-daemon/service-trigger/
-	cp -f misc/service-trigger/*.sh ${DESTDIR}/usr/lib/deepin-daemon/service-trigger/
+	mkdir -pv ${DESTDIR}${PREFIX}/lib/deepin-daemon/service-trigger
+	cp -f misc/service-trigger/*.json ${DESTDIR}${PREFIX}/lib/deepin-daemon/service-trigger/
 
 	mkdir -pv ${DESTDIR}/etc/NetworkManager/conf.d
 	cp -f misc/etc/NetworkManager/conf.d/* ${DESTDIR}/etc/NetworkManager/conf.d/
@@ -219,12 +221,11 @@ install: build install-dde-data install-icons
 
 	mkdir -pv ${DESTDIR}${PREFIX}/share/dsg/configs/org.deepin.dde.daemon/
 	cp -r misc/dsg-configs/*.json ${DESTDIR}${PREFIX}/share/dsg/configs/org.deepin.dde.daemon/
-	mkdir -pv ${DESTDIR}${PREFIX}/share/dsg/configs/org.deepin.dde.lightdm-deepin-greeter
-	cp -r misc/dsg-configs/org.deepin.dde.lightdm-deepin-greeter/*.json ${DESTDIR}${PREFIX}/share/dsg/configs/org.deepin.dde.lightdm-deepin-greeter/
 
+	cp -f misc/scripts/dde-lock.sh ${DESTDIR}${PREFIX}/lib/deepin-daemon/
 install-dde-data:
 	mkdir -pv ${DESTDIR}${PREFIX}/share/dde/
-	cp -r misc/data ${DESTDIR}${PREFIX}/share/dde/
+	cp -r misc/data misc/zoneinfo ${DESTDIR}${PREFIX}/share/dde/
 
 icons:
 	python3 misc/icons/install_to_hicolor.py -d status -o out/icons misc/icons/status

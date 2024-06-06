@@ -22,7 +22,7 @@ import (
 	"github.com/linuxdeepin/dde-api/language_support"
 	"github.com/linuxdeepin/dde-api/userenv"
 	ddbus "github.com/linuxdeepin/dde-daemon/dbus"
-	libnetwork "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.network"
+	libnetwork "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.network1"
 	notifications "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.notifications"
 	localehelper "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.api.localehelper"
 	lastore "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.lastore1"

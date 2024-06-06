@@ -730,7 +730,7 @@ func (sm *ShortcutManager) isPidVirtualMachine(pid uint32) (bool, error) {
 	return ret, nil
 }
 
-// 初始化go-dbus-factory system DBUS : com.deepin.daemon.Daemon
+// 初始化go-dbus-factory system DBUS : org.deepin.dde.Daemon1
 func (sm *ShortcutManager) initSysDaemon() error {
 	sysBus, err := dbus.SystemBus()
 	if err != nil {
