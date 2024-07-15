@@ -11,7 +11,7 @@ _*
 grub2/grub2
 grub2/testdata/tmp_*
 themes/themes
-network/network
+network1/network
 accounts1/accounts
 audio1/audio
 datetime/datetime

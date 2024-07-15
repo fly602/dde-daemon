@@ -215,7 +215,7 @@ func (m *Manager) initUserObj(systemConn *dbus.Conn) {
 		return
 	}
 
-	err = common.ActivateSysDaemonService("com.deepin.daemon.Accounts")
+	err = common.ActivateSysDaemonService("org.deepin.dde.Accounts1")
 	if err != nil {
 		logger.Warning(err)
 	}

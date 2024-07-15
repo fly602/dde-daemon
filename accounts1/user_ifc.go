@@ -44,8 +44,8 @@ import (
 )
 
 const (
-	userDBusPathPrefix = "/com/deepin/daemon/Accounts/User"
-	userDBusInterface  = "com.deepin.daemon.Accounts.User"
+	userDBusPathPrefix = "/org/deepin/dde/Accounts1/User"
+	userDBusInterface  = "org.deepin.dde.Accounts1.User"
 	controlCenter      = "dde-control-center"
 	resetPasswordDia   = "reset-password-dialog"
 )

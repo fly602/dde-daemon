@@ -2,13 +2,11 @@ PREFIX = /usr
 GOPATH_DIR = gopath
 GOPKG_PREFIX = github.com/linuxdeepin/dde-daemon
 GOBUILD = go build $(GO_BUILD_FLAGS)
-export GOPATH=$(shell go env GOPATH)
+export GOPATH="/home/uos/v25:/home/uos/go:/usr/share/gocode"
 
 ifneq (${shell uname -m}, mips64el)
     GOBUILD_OPTIONS = -ldflags '-linkmode=external -extldflags "-pie"'
 endif
-
-
 
 TEST = \
     ${GOPKG_PREFIX}/accounts1 \
@@ -16,10 +14,10 @@ TEST = \
     ${GOPKG_PREFIX}/accounts1/logined \
     ${GOPKG_PREFIX}/accounts1/users \
     ${GOPKG_PREFIX}/appinfo \
-    ${GOPKG_PREFIX}/apps \
+    ${GOPKG_PREFIX}/apps1 \
     ${GOPKG_PREFIX}/audio1 \
-    ${GOPKG_PREFIX}/bin/backlight_helper \
-    ${GOPKG_PREFIX}/bin/backlight_helper/ddcci \
+    ${GOPKG_PREFIX}/bin/backlight_helper1 \
+    ${GOPKG_PREFIX}/bin/backlight_helper1/ddcci \
     ${GOPKG_PREFIX}/bin/dde-authority \
     ${GOPKG_PREFIX}/bin/dde-greeter-setter \
     ${GOPKG_PREFIX}/bin/dde-lockservice \
@@ -42,15 +40,15 @@ TEST = \
     ${GOPKG_PREFIX}/debug \
     ${GOPKG_PREFIX}/fprintd1 \
     ${GOPKG_PREFIX}/fprintd1/common \
-    ${GOPKG_PREFIX}/gesture \
+    ${GOPKG_PREFIX}/gesture1 \
     ${GOPKG_PREFIX}/graph \
     ${GOPKG_PREFIX}/grub2 \
     ${GOPKG_PREFIX}/grub_common \
     ${GOPKG_PREFIX}/grub_gfx \
     ${GOPKG_PREFIX}/housekeeping \
     ${GOPKG_PREFIX}/image_effect1 \
-    ${GOPKG_PREFIX}/inputdevices \
-    ${GOPKG_PREFIX}/inputdevices/iso639 \
+    ${GOPKG_PREFIX}/inputdevices1 \
+    ${GOPKG_PREFIX}/inputdevices1/iso639 \
     ${GOPKG_PREFIX}/iw \
     ${GOPKG_PREFIX}/keybinding1 \
     ${GOPKG_PREFIX}/keybinding1/shortcuts \
@@ -58,10 +56,10 @@ TEST = \
     ${GOPKG_PREFIX}/langselector1 \
     ${GOPKG_PREFIX}/lastore1 \
     ${GOPKG_PREFIX}/loader \
-    ${GOPKG_PREFIX}/network \
-    ${GOPKG_PREFIX}/network/nm \
-    ${GOPKG_PREFIX}/network/nm_generator \
-    ${GOPKG_PREFIX}/network/proxychains \
+    ${GOPKG_PREFIX}/network1 \
+    ${GOPKG_PREFIX}/network1/nm \
+    ${GOPKG_PREFIX}/network1/nm_generator \
+    ${GOPKG_PREFIX}/network1/proxychains \
     ${GOPKG_PREFIX}/screenedge1 \
     ${GOPKG_PREFIX}/screensaver1 \
     ${GOPKG_PREFIX}/service_trigger \
@@ -73,13 +71,13 @@ TEST = \
     ${GOPKG_PREFIX}/soundeffect1 \
     ${GOPKG_PREFIX}/system/airplane_mode1 \
     ${GOPKG_PREFIX}/system/bluetooth1 \
-    ${GOPKG_PREFIX}/system/display \
-    ${GOPKG_PREFIX}/system/gesture \
+    ${GOPKG_PREFIX}/system/display1 \
+    ${GOPKG_PREFIX}/system/gesture1 \
     ${GOPKG_PREFIX}/system/hostname \
-    ${GOPKG_PREFIX}/system/inputdevices \
-    ${GOPKG_PREFIX}/system/keyevent \
+    ${GOPKG_PREFIX}/system/inputdevices1 \
+    ${GOPKG_PREFIX}/system/keyevent1 \
     ${GOPKG_PREFIX}/system/lang \
-    ${GOPKG_PREFIX}/system/network \
+    ${GOPKG_PREFIX}/system/network1 \
     ${GOPKG_PREFIX}/system/power1 \
     ${GOPKG_PREFIX}/system/power_manager1 \
     ${GOPKG_PREFIX}/system/resource_ctl \
@@ -100,7 +98,7 @@ BINARIES =  \
 	    dde-system-daemon \
 	    grub2 \
 	    search \
-	    backlight_helper \
+	    backlight_helper1 \
 	    langselector \
 	    soundeffect \
 	    dde-lockservice \
@@ -119,6 +117,7 @@ prepare:
 	@mkdir -p out/bin
 	@mkdir -p ${GOPATH_DIR}/src/$(dir ${GOPKG_PREFIX});
 	@ln -snf ../../../.. ${GOPATH_DIR}/src/${GOPKG_PREFIX};
+	@echo "===>>>" ${DESTDIR}${PREFIX}/lib/deepin-daemon/
 
 out/bin/%: prepare
 	env GOPATH="${CURDIR}/${GOPATH_DIR}:${GOPATH}" ${GOBUILD} -o $@ ${GOBUILD_OPTIONS} ${GOPKG_PREFIX}/bin/${@F}
@@ -225,7 +224,7 @@ install: build install-dde-data install-icons
 	cp -f misc/scripts/dde-lock.sh ${DESTDIR}${PREFIX}/lib/deepin-daemon/
 install-dde-data:
 	mkdir -pv ${DESTDIR}${PREFIX}/share/dde/
-	cp -r misc/data misc/zoneinfo ${DESTDIR}${PREFIX}/share/dde/
+	cp -r misc/data ${DESTDIR}${PREFIX}/share/dde/
 
 icons:
 	python3 misc/icons/install_to_hicolor.py -d status -o out/icons misc/icons/status

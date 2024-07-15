@@ -28,15 +28,15 @@ import (
 
 // #nosec G101
 const (
-	polkitActionUserAdministration     = "com.deepin.daemon.accounts.user-administration"
-	polkitActionChangeOwnData          = "com.deepin.daemon.accounts.change-own-user-data"
-	polkitActionEnableAutoLogin        = "com.deepin.daemon.accounts.enable-auto-login"
-	polkitActionDisableAutoLogin       = "com.deepin.daemon.accounts.disable-auto-login"
-	polkitActionEnableQuickLogin       = "com.deepin.daemon.accounts.enable-quick-login"
-	polkitActionDisableQuickLogin      = "com.deepin.daemon.accounts.disable-quick-login"
-	polkitActionEnableNoPasswordLogin  = "com.deepin.daemon.accounts.enable-nopass-login"
-	polkitActionDisableNoPasswordLogin = "com.deepin.daemon.accounts.disable-nopass-login"
-	polkitActionSetKeyboardLayout      = "com.deepin.daemon.accounts.set-keyboard-layout"
+	polkitActionUserAdministration     = "org.deepin.dde.accounts.user-administration"
+	polkitActionChangeOwnData          = "org.deepin.dde.accounts.change-own-user-data"
+	polkitActionEnableAutoLogin        = "org.deepin.dde.accounts.enable-auto-login"
+	polkitActionDisableAutoLogin       = "org.deepin.dde.accounts.disable-auto-login"
+	polkitActionEnableNoPasswordLogin  = "org.deepin.dde.accounts.enable-nopass-login"
+	polkitActionDisableNoPasswordLogin = "org.deepin.dde.accounts.disable-nopass-login"
+	polkitActionSetKeyboardLayout      = "org.deepin.dde.accounts.set-keyboard-layout"
+	polkitActionEnableQuickLogin       = "org.deepin.dde.accounts.enable-quick-login"
+	polkitActionDisableQuickLogin      = "org.deepin.dde.accounts.disable-quick-login"
 
 	systemLocaleFile  = "/etc/default/locale"
 	systemdLocaleFile = "/etc/locale.conf"

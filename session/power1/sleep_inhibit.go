@@ -5,7 +5,7 @@
 package power
 
 import (
-	"github.com/linuxdeepin/dde-daemon/network"
+	"github.com/linuxdeepin/dde-daemon/network1"
 	"syscall"
 
 	"github.com/godbus/dbus/v5"
