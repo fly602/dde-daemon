@@ -103,6 +103,12 @@ func NewManager(service *dbusutil.Service) *Manager {
 	var m = &Manager{
 		service: service,
 	}
+	v, err := dmi.GetDMI()
+	if err != nil {
+		logger.Warning(err)
+	} else {
+		m.DMIInfo = *v
+	}
 	return m
 }
 

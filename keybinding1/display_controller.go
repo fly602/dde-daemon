@@ -73,7 +73,8 @@ func (c *DisplayController) ExecCmd(cmd ActionCmd) error {
 		switch cmd {
 		case DisplayModeSwitch:
 			// TODO 联想xrandr -q需要修改成X的接口
-			if strv.Strv(c.m.needXrandrQDevice).Contains(c.m.dmiInfo.ProductName) {
+			if c.m.dmiInfo.ProductName != "" &&
+				strv.Strv(c.m.needXrandrQDevice).Contains(c.m.dmiInfo.ProductName) {
 				logger.Info("win+p pressed,need run xrandr -q")
 				err = exec.Command("xrandr", "-q").Run()
 				if err != nil {

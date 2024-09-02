@@ -5,6 +5,7 @@
 package inputdevices1
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os/exec"
@@ -86,6 +87,9 @@ func (m *InputDevices) init() {
 		m.updateSupportWakeupDevices()
 		if err := TouchpadExist(touchpadSwitchFile); err == nil {
 			m.newTouchpad()
+			if m.dsgInputDevices == nil {
+				return
+			}
 			v, err := m.dsgInputDevices.Value(0, _dsettingsTouchpadEnabledKey)
 			if err != nil {
 				logger.Warning(err)
@@ -160,6 +164,9 @@ func (m *InputDevices) tryApeendDsgData(list []string, key, value string) []stri
 }
 
 func (m *InputDevices) dsgSetValue(path, value string) error {
+	if m.dsgInputDevices == nil {
+		return errors.New("dsgInputDevices is nil")
+	}
 	//获取旧的数据
 	v, err := m.dsgInputDevices.Value(0, _dsettingsDeviceWakeupStatusKey)
 	if err != nil {
@@ -234,13 +241,15 @@ func (m *InputDevices) initDSettings(sysBus *dbusutil.Service) {
 
 	getDeviceWakeupStatusFunc()
 
-	//dsg配置数据改变
-	m.dsgInputDevices.InitSignalExt(m.systemSigLoop, true)
-	_, err = m.dsgInputDevices.ConnectValueChanged(func(key string) {
-		if key == _dsettingsDeviceWakeupStatusKey {
-			getDeviceWakeupStatusFunc()
-		}
-	})
+	if m.dsgInputDevices != nil {
+		//dsg配置数据改变
+		m.dsgInputDevices.InitSignalExt(m.systemSigLoop, true)
+		_, err = m.dsgInputDevices.ConnectValueChanged(func(key string) {
+			if key == _dsettingsDeviceWakeupStatusKey {
+				getDeviceWakeupStatusFunc()
+			}
+		})
+	}
 	m.systemSigLoop.Start()
 	if err != nil {
 		logger.Warning(err)

@@ -51,10 +51,27 @@ type RfkillEvent struct {
 }
 
 func (mgr *Manager) listenRfkill() {
-	fd, err := syscall.Open("/dev/rfkill", syscall.O_RDWR, 0777)
+	getRfkill := func() (fd int, err error) {
+		return syscall.Open("/dev/rfkill", syscall.O_RDWR, 0777)
+	}
+	fd, err := getRfkill()
 	if err != nil {
-		logger.Warning("failed to open /dev/rfkill:", err)
-		return
+		// 个别机器文件创建较晚，尝试多读几次
+		var checkTimer = time.NewTimer(time.Second)
+		count := 0
+		for range checkTimer.C {
+			if count == 5 {
+				logger.Warning("failed to open /dev/rfkill:", err)
+				return
+			} else {
+				fd, err = getRfkill()
+				if err == nil {
+					break
+				}
+				count++
+				checkTimer.Reset(time.Second)
+			}
+		}
 	}
 	defer syscall.Close(fd)
 
@@ -155,20 +172,29 @@ func (mgr *Manager) updateAllState() {
 
 	// 仅保存 soft block 的状态
 	allSoftBlocked := false
+	wifiBlocked := false
 	states, err := getRfkillState(rfkillTypeWifi)
-	if err != nil {
-		logger.Warning(err)
-		allSoftBlocked = mgr.BluetoothEnabled && mgr.WifiEnabled
-	} else if mgr.WifiEnabled {
-		allSoftBlocked = mgr.BluetoothEnabled
-	} else {
+	if err == nil {
 		// nm 无线控制关闭，可能是hard关闭，dde只控制soft。
+		allWifiSoftBlocked := true
 		for _, v := range states {
-			if v.Soft != 0 {
-				allSoftBlocked = true
-
+			if v.Soft == 0 {
+				allWifiSoftBlocked = false
+				break
 			}
 		}
+		wifiBlocked = allWifiSoftBlocked
+	} else {
+		logger.Warning(err)
+		wifiBlocked = mgr.hasNmWirelessDevices && mgr.WifiEnabled
+	}
+
+	if mgr.hasNmWirelessDevices && len(mgr.btRfkillDevices) > 0 {
+		allSoftBlocked = wifiBlocked && mgr.BluetoothEnabled
+	} else if mgr.hasNmWirelessDevices {
+		allSoftBlocked = wifiBlocked
+	} else if len(mgr.btRfkillDevices) > 0 {
+		allSoftBlocked = mgr.BluetoothEnabled
 	}
 
 	mgr.config.SetBlocked(rfkillTypeAll, allSoftBlocked)
@@ -177,6 +203,7 @@ func (mgr *Manager) updateAllState() {
 
 // 只处理bluetooth设备
 func (mgr *Manager) handleBTRfkillEvent(event *RfkillEvent) {
+	logger.Warning("handleBTRfkillEvent=======>", event.Typ, event.Op, event.Op == rfkillOpDel)
 	if event.Typ != rfkillTypeBT {
 		return
 	}

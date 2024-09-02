@@ -189,31 +189,6 @@ func (m *Manager) newDevice(devPath dbus.ObjectPath) (dev *device, err error) {
 		if err != nil {
 			logger.Warningf("connect to ActivateConnection failed, err: %v", err)
 		}
-
-		if nmHasSystemSettingsModifyPermission() {
-			carrierChanged := func(hasValue, value bool) {
-				if !hasValue || !value {
-					return
-				}
-
-				logger.Info("wired plugin", dev.Path)
-				logger.Debug("ensure wired connection exists", dev.Path)
-				_, _, err = m.ensureWiredConnectionExists(dev.Path, true)
-				if err != nil {
-					logger.Warning(err)
-				}
-			}
-
-			err = nmDev.Wired().Carrier().ConnectChanged(carrierChanged)
-			if err != nil {
-				logger.Warning("failed to monitor Wired-Carrier's change:", err)
-			}
-
-			carrier, _ := nmDev.Wired().Carrier().Get(0)
-			carrierChanged(true, carrier)
-		} else {
-			logger.Debug("do not have modify permission")
-		}
 	case nm.NM_DEVICE_TYPE_WIFI:
 		nmDevWireless := nmDev.Wireless()
 		dev.ClonedAddress, _ = nmDevWireless.HwAddress().Get(0)

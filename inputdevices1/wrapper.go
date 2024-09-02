@@ -62,7 +62,7 @@ func handleDeviceChanged() {
 
 	// 鼠标依赖触摸板的数据，必须在触摸板之后获取
 	_tpadInfos = Touchpads{}
-	getTPadInfos(false, false)
+	getTPadInfos(false, true)
 	_mouseInfos = Mouses{}
 	getMouseInfos(false)
 	_wacomInfos = dxWacoms{}

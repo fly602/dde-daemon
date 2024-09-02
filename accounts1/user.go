@@ -51,6 +51,7 @@ const (
 	confKeyGreeterBackground  = "GreeterBackground"
 	confKeyHistoryLayout      = "HistoryLayout"
 	confKeyUse24HourFormat    = "Use24HourFormat"
+	confKeyWechatAuthEnabled  = "WechatAuthEnabled"
 	confKeyUUID               = "UUID"
 	confKeyWorkspace          = "Workspace"
 	confKeyWeekdayFormat      = "WeekdayFormat"
@@ -61,14 +62,15 @@ const (
 	confKeyWeekBegins         = "WeekBegins"
 	confKeyPasswordHint       = "PasswordHint"
 
-	defaultUse24HourFormat = true
-	defaultWeekdayFormat   = 0
-	defaultShortDateFormat = 3
-	defaultLongDateFormat  = 1
-	defaultShortTimeFormat = 0
-	defaultLongTimeFormat  = 0
-	defaultWeekBegins      = 0
-	defaultWorkspace       = 1
+	defaultWechatAuthEnabled = false
+	defaultUse24HourFormat   = true
+	defaultWeekdayFormat     = 0
+	defaultShortDateFormat   = 3
+	defaultLongDateFormat    = 1
+	defaultShortTimeFormat   = 0
+	defaultLongTimeFormat    = 0
+	defaultWeekBegins        = 0
+	defaultWorkspace         = 1
 )
 
 func getDefaultUserBackground() string {
@@ -140,7 +142,8 @@ type User struct {
 	// dbusutil-gen: equal=nil
 	HistoryLayout []string
 
-	configLocker sync.Mutex
+	WechatAuthEnabled bool
+	configLocker      sync.Mutex
 }
 
 func NewUser(userPath string, service *dbusutil.Service, ignoreErr bool) (*User, error) {
@@ -831,6 +834,12 @@ func loadUserConfigInfo(u *User) {
 	u.Use24HourFormat, err = kf.GetBoolean(confGroupUser, confKeyUse24HourFormat)
 	if err != nil {
 		u.Use24HourFormat = defaultUse24HourFormat
+		isSave = true
+	}
+
+	u.WechatAuthEnabled, err = kf.GetBoolean(confGroupUser, confKeyWechatAuthEnabled)
+	if err != nil {
+		u.WechatAuthEnabled = defaultWechatAuthEnabled
 		isSave = true
 	}
 

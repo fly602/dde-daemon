@@ -9,6 +9,7 @@ import (
 	"crypto/md5"
 	"encoding/csv"
 	"fmt"
+	"github.com/linuxdeepin/go-lib/utils"
 	"io"
 	"io/ioutil"
 	"os"
@@ -250,7 +251,15 @@ func (sr *SubRecorder) save() error {
 		}
 	} else {
 		if err := os.Rename(tmpFile, file); err != nil {
-			return err
+			if strings.Contains(err.Error(), "invalid cross-device link") {
+				logger.Debugf("invalid cross-device link, use move file, src is %v, dest is %v", tmpFile, file)
+				err = utils.MoveFile(tmpFile, file)
+				if err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
 		}
 	}
 	return nil

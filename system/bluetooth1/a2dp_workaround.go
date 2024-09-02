@@ -7,7 +7,7 @@ package bluetooth
 func (b *SysBluetooth) disconnectA2DPDeviceExcept(d *device) {
 	for _, devices := range b.devices {
 		for _, device := range devices {
-			if device.Path == d.Path {
+			if device == nil || device.Path == d.Path {
 				continue
 			}
 			for _, uuid := range device.UUIDs {

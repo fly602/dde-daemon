@@ -58,6 +58,7 @@ const (
 	dsgKeyReduceNoise             = "reduceNoise"
 	dsgKeyInputDefaultPriorities  = "inputDefaultPrioritiesByType"
 	dsgKeyOutputDefaultPriorities = "outputDefaultPrioritiesByType"
+	dsgKeyBluezModeDefault        = "bluezModeDefault"
 )
 
 var (
@@ -672,11 +673,19 @@ func (a *Audio) init() error {
 		}
 
 		for _, source := range a.sources {
-			if source.Name == a.defaultSourceName {
+			if strings.Contains(a.defaultSourceName, "record_mono") && strings.Contains(source.Name, "alsa_input.platform-rk809-sound.analog-stereo") {
 				a.defaultSource = source
 				a.PropsMu.Lock()
 				a.setPropDefaultSource(source.getPath())
 				a.PropsMu.Unlock()
+				logger.Debug("init setPropDefaultSource:", source.Name, source.getPath())
+			} else {
+				if source.Name == a.defaultSourceName {
+					a.defaultSource = source
+					a.PropsMu.Lock()
+					a.setPropDefaultSource(source.getPath())
+					a.PropsMu.Unlock()
+				}
 			}
 		}
 		a.mu.Unlock()
@@ -731,7 +740,7 @@ func (a *Audio) init() error {
 	a.moveSinkInputsToDefaultSink()
 
 	// 蓝牙支持的模式
-	a.setPropBluetoothAudioModeOpts([]string{"a2dp", "headset"})
+	a.setPropBluetoothAudioModeOpts([]string{"a2dp", "headset", "handsfree"})
 
 	return nil
 }
@@ -879,10 +888,15 @@ func (a *Audio) setDefaultSourceWithPort(cardId uint32, portName string) error {
 		logger.Debugf("set source #%d port %s", source.Index, portName)
 		a.ctx.SetSourcePortByIndex(source.Index, portName)
 	}
-
+	logger.Debug("a.getDefaultSourceName() ", a.getDefaultSourceName())
 	if a.getDefaultSourceName() != source.Name {
-		logger.Debugf("set default source #%d %s", source.Index, source.Name)
-		a.ctx.SetDefaultSource(source.Name)
+		if strings.Contains(source.Name, "platform-rk809-sound.analog-stereo") {
+			a.ctx.SetDefaultSource("record_mono")
+			a.updateDefaultSource(source.Name)
+			logger.Debugf("set default source %s as record_mono", source.Name)
+		} else {
+			a.ctx.SetDefaultSource(source.Name)
+		}
 	}
 
 	return nil
@@ -1373,6 +1387,14 @@ func (a *Audio) updateDefaultSource(sourceName string) {
 	}
 	logger.Debugf("updateDefaultSource #%d %s", sourceInfo.Index, sourceName)
 
+	if !isPhysicalDevice(sourceName) {
+		sourceInfo = a.getSourceInfoByName(sourceInfo.Proplist["device.master_device"])
+		if sourceInfo == nil {
+			logger.Warning("failed to get virtual device sourceInfo for name:", sourceName)
+			return
+		}
+	}
+	logger.Debug("sourceInfo", sourceInfo)
 	a.mu.Lock()
 	source, ok := a.sources[sourceInfo.Index]
 	a.mu.Unlock()
@@ -1386,6 +1408,16 @@ func (a *Audio) updateDefaultSource(sourceName string) {
 		}
 	}
 
+	if strings.Contains(source.Name, "record_mono") {
+		sourceInfo := a.getSourceInfoByName("alsa_input.platform-rk809-sound.analog-stereo")
+		if sourceInfo != nil {
+			a.mu.Lock()
+			if v, ok := a.sources[sourceInfo.Index]; ok {
+				source = v
+			}
+			a.mu.Unlock()
+		}
+	}
 	a.mu.Lock()
 	a.defaultSource = source
 	a.mu.Unlock()
@@ -1584,7 +1616,7 @@ func (a *Audio) SetBluetoothAudioMode(mode string) *dbus.Error {
 			card.core.SetProfile(profile.Name)
 
 			// 手动切换蓝牙模式为headset，
-			if mode == bluezModeHeadset {
+			if mode == bluezModeHeadset || mode == bluezModeHandsfree {
 				a.inputAutoSwitchCount = 0
 				GetPriorityManager().Input.SetTheFirstType(PortTypeBluetooth)
 			}
@@ -1707,6 +1739,21 @@ func (a *Audio) initDsgProp() error {
 		}
 		logger.Info("output default priority list", outputDefaultPriorities)
 	}
+
+	getBluezModeDefault := func() {
+		var val string
+		err = systemConnObj.Call("org.desktopspec.ConfigManager.Manager.value", 0, dsgKeyBluezModeDefault).Store(&val)
+		if err != nil {
+			logger.Warning(err)
+		} else {
+			if val == bluezModeA2dp || val == bluezModeHandsfree || val == bluezModeHeadset {
+				bluezModeDefault = val
+				logger.Info("bluez default mode:", bluezModeDefault)
+			}
+		}
+	}
+	getBluezModeDefault()
+
 	// 监听dsg配置变化
 	a.systemSigLoop.AddHandler(&dbusutil.SignalRule{
 		Name: "org.desktopspec.ConfigManager.Manager.valueChanged",
@@ -1714,14 +1761,19 @@ func (a *Audio) initDsgProp() error {
 		if strings.Contains(sig.Name, "org.desktopspec.ConfigManager.Manager.valueChanged") &&
 			strings.Contains(string(sig.Path), "org_deepin_dde_daemon_audio") && len(sig.Body) >= 1 {
 			key, ok := sig.Body[0].(string)
-			if ok && key == dsgKeyAutoSwitchPort {
-				var val bool
-				err = systemConnObj.Call("org.desktopspec.ConfigManager.Manager.value", 0, key).Store(&val)
-				if err != nil {
-					logger.Warning(err)
-				} else {
-					logger.Info("auto switch port:", val)
-					a.setEnableAutoSwitchPort(val)
+			if ok {
+				switch key {
+				case dsgKeyAutoSwitchPort:
+					var val bool
+					err = systemConnObj.Call("org.desktopspec.ConfigManager.Manager.value", 0, key).Store(&val)
+					if err != nil {
+						logger.Warning(err)
+					} else {
+						logger.Info("auto switch port:", val)
+						a.setEnableAutoSwitchPort(val)
+					}
+				case dsgKeyBluezModeDefault:
+					getBluezModeDefault()
 				}
 			}
 

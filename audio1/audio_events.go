@@ -358,7 +358,7 @@ func (a *Audio) handleSinkChanged(idx uint32) {
 	logger.Debugf("sink %d changed", idx)
 
 	// 蓝牙模式切换、触发sink change
-	if a.defaultSink.index == idx && isBluezAudio(a.defaultSink.Name) {
+	if a.defaultSink != nil && a.defaultSink.index == idx && isBluezAudio(a.defaultSink.Name) {
 		card, err := a.cards.get(a.defaultSink.Card)
 		if err == nil {
 			a.setPropBluetoothAudioMode(card.BluezMode())

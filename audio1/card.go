@@ -171,7 +171,7 @@ func (cards CardList) string() string {
 				Bluetooth:   isBluetoothCard(cardInfo.core),
 				Description: portInfo.Description,
 				Direction:   portInfo.Direction,
-				PortType:    DetectPortType(cardInfo.core, &portInfo),
+				PortType:    GetIconPortType(cardInfo.Name, portInfo.Name),
 			})
 		}
 
@@ -200,7 +200,7 @@ func (cards CardList) stringWithoutUnavailable() string {
 				Bluetooth:   isBluetoothCard(cardInfo.core),
 				Description: portInfo.Description,
 				Direction:   portInfo.Direction,
-				PortType:    DetectPortType(cardInfo.core, &portInfo),
+				PortType:    GetIconPortType(cardInfo.Name, portInfo.Name),
 			})
 		}
 

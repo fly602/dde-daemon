@@ -193,7 +193,13 @@ func (m *Manager) initLidSwitchByUPower() error {
 	if err != nil {
 		return err
 	}
-	m.HasLidSwitch = true
+
+	hasLidSwitch, err := uPowerObj.LidIsPresent().Get(0)
+	if err != nil {
+		return err
+	}
+
+	m.HasLidSwitch = hasLidSwitch
 	return nil
 }
 

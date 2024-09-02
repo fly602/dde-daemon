@@ -5,6 +5,7 @@
 package timedated
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -83,6 +84,9 @@ func (m *Manager) initDsgConfig() {
 }
 
 func (m *Manager) getDsgObsoleteNTPServer() string {
+	if m.dsManager == nil {
+		return ""
+	}
 	v, err := m.dsManager.Value(0, dsettingsKeyObsoleteNTPServer)
 	if err != nil {
 		logger.Warning(err)
@@ -93,6 +97,9 @@ func (m *Manager) getDsgObsoleteNTPServer() string {
 }
 
 func (m *Manager) getDsgNTPServer() string {
+	if m.dsManager == nil {
+		return ""
+	}
 	v, err := m.dsManager.Value(0, dsettingsKeyNTPServer)
 	if err != nil {
 		logger.Warning(err)
@@ -103,10 +110,16 @@ func (m *Manager) getDsgNTPServer() string {
 }
 
 func (m *Manager) setDsgObsoleteNTPServer(server string) error {
+	if m.dsManager == nil {
+		return errors.New("dsManager is nil")
+	}
 	return m.dsManager.SetValue(0, dsettingsKeyObsoleteNTPServer, dbus.MakeVariant(server))
 }
 
 func (m *Manager) setDsgNTPServer(server string) error {
+	if m.dsManager == nil {
+		return errors.New("dsManager is nil")
+	}
 	return m.dsManager.SetValue(0, dsettingsKeyNTPServer, dbus.MakeVariant(server))
 }
 

@@ -144,6 +144,11 @@ func (v *User) GetExportedMethods() dbusutil.ExportedMethods {
 			InArgs: []string{"enabled"},
 		},
 		{
+			Name:   "EnableWechatAuth",
+			Fn:     v.EnableWechatAuth,
+			InArgs: []string{"value"},
+		},
+		{
 			Name:    "GetReminderInfo",
 			Fn:      v.GetReminderInfo,
 			OutArgs: []string{"info"},
@@ -298,6 +303,10 @@ func (v *User) GetExportedMethods() dbusutil.ExportedMethods {
 			Name:   "SetWeekdayFormat",
 			Fn:     v.SetWeekdayFormat,
 			InArgs: []string{"value"},
+		},
+		{
+			Name: "UpdateWechatAuthState",
+			Fn:   v.UpdateWechatAuthState,
 		},
 		{
 			Name:    "VerifySecretQuestions",

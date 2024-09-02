@@ -17,12 +17,13 @@ import (
 )
 
 const (
-	bluezModeA2dp    = "a2dp"
-	bluezModeHeadset = "headset"
-	bluezModeDefault = bluezModeA2dp
+	bluezModeA2dp      = "a2dp"
+	bluezModeHeadset   = "headset"
+	bluezModeHandsfree = "handsfree"
 )
 
 var (
+	bluezModeDefault    = bluezModeA2dp
 	bluezModeFilterList = []string{"a2dp_source"}
 )
 
@@ -166,6 +167,8 @@ func (card *Card) BluezMode() string {
 		return bluezModeA2dp
 	} else if strings.Contains(strings.ToLower(profileName), bluezModeHeadset) {
 		return bluezModeHeadset
+	} else if strings.Contains(strings.ToLower(profileName), bluezModeHandsfree) {
+		return bluezModeHandsfree
 	} else {
 		return ""
 	}
@@ -188,17 +191,16 @@ func (card *Card) BluezModeOpts() []string {
 			continue
 		}
 
-		if strings.Contains(profile.Description, "HFP") && !strings.Contains(profile.Description, "HSP") {
-			logger.Debugf("%s %s is a HFP profile", card.core.Name, profile.Name)
-			continue
-		}
-
 		if strings.Contains(strings.ToLower(profile.Name), "a2dp") {
 			opts = append(opts, "a2dp")
 		}
 
 		if strings.Contains(strings.ToLower(profile.Name), "headset") {
 			opts = append(opts, "headset")
+		}
+
+		if strings.Contains(strings.ToLower(profile.Name), "handsfree") {
+			opts = append(opts, "handsfree")
 		}
 	}
 	return opts

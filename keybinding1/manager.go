@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/linuxdeepin/go-lib/appinfo/desktopappinfo"
+	"github.com/linuxdeepin/go-lib/strv"
 
 	"os"
 	"os/exec"
@@ -75,10 +76,11 @@ const (
 )
 
 const (
-	DSettingsAppID                    = "org.deepin.dde.daemon"
-	DSettingsKeyBindingName           = "org.deepin.dde.daemon.keybinding"
-	DSettingsKeyWirelessControlEnable = "wirelessControlEnable"
-	DSettingsKeyNeedXrandrQDevices    = "need-xrandr-q-devices"
+	DSettingsAppID                         = "org.deepin.dde.daemon"
+	DSettingsKeyBindingName                = "org.deepin.dde.daemon.keybinding"
+	DSettingsKeyWirelessControlEnable      = "wirelessControlEnable"
+	DSettingsKeyNeedXrandrQDevices         = "need-xrandr-q-devices"
+	DSettingsKeyDeviceManagerControlEnable = "deviceManagerControlEnable"
 )
 
 const ( // power按键事件的响应
@@ -182,11 +184,13 @@ type Manager struct {
 	sklWaitQuit          chan int
 
 	// dsg config
-	wifiControlEnable bool
-	needXrandrQDevice []string
-	useNewAppManager  bool
+	wifiControlEnable          bool
+	needXrandrQDevice          []string
+	useNewAppManager           bool
+	deviceManagerControlEnable bool
 
-	configManagerPath dbus.ObjectPath
+	configManagerPath           dbus.ObjectPath
+	DisabledSystemShortcutsList strv.Strv
 
 	dmiInfo     systeminfo.DMIInfo
 	rfkillState bool
@@ -444,8 +448,17 @@ func (m *Manager) initDSettings(bus *dbus.Conn) {
 		}
 	}
 
+	getDeviceManagerControlEnableConfig := func() {
+		v, err := keybindingDS.Value(0, DSettingsKeyDeviceManagerControlEnable)
+		if err != nil {
+			logger.Warning(err)
+			return
+		}
+		m.deviceManagerControlEnable = v.Value().(bool)
+	}
 	getWirelessControlEnableConfig()
 	getNeedXrandrQConfig()
+	getDeviceManagerControlEnableConfig()
 
 	keybindingDS.InitSignalExt(m.systemSigLoop, true)
 	// 监听dsg配置变化
@@ -455,6 +468,8 @@ func (m *Manager) initDSettings(bus *dbus.Conn) {
 			getWirelessControlEnableConfig()
 		case DSettingsKeyNeedXrandrQDevices:
 			getNeedXrandrQConfig()
+		case DSettingsKeyDeviceManagerControlEnable:
+			getDeviceManagerControlEnableConfig()
 		}
 	})
 	if err != nil {
@@ -575,6 +590,11 @@ func (m *Manager) listenGlobalAccel(sessionBus *dbus.Conn) error {
 
 			m.shortcutKey = sig.Body[0].(string)
 			m.shortcutKeyCmd = sig.Body[1].(string)
+			shortId := kwinSysActionCmdMap[m.shortcutKeyCmd]
+			if shortId != "" && m.DisabledSystemShortcutsList.Contains(shortId) {
+				logger.Warningf("shortcut id: %s is disabled", shortId)
+				return
+			}
 			ok := strings.Compare(string("kwin"), m.shortcutKey)
 			if ok == 0 {
 				logger.Debug("[global key] get accel sig.Body[1]", m.shortcutKeyCmd)
@@ -1104,6 +1124,10 @@ func (m *Manager) handleKeyEvent(ev *shortcuts.KeyEvent) {
 	shortcutId := ev.Shortcut.GetId()
 	logger.Debugf("shortcut id: %s, type: %v, action: %#v",
 		shortcutId, ev.Shortcut.GetType(), action)
+	if ev.Shortcut.GetType() == shortcuts.ShortcutTypeSystem && m.DisabledSystemShortcutsList.Contains(shortcutId) {
+		logger.Warningf("shortcut id: %s is disabled", shortcutId)
+		return
+	}
 	if action == nil {
 		logger.Warning("action is nil")
 		return

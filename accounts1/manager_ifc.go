@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -51,6 +52,24 @@ func (m *Manager) CreateUser(sender dbus.Sender,
 
 	logger.Debug("[CreateUser] new user:", name, fullName, accountType)
 
+	// 判断用户名字符串长度，大于2小于32
+	if len(name) < 3 || len(name) > 32 {
+		return nilObjPath, dbusutil.ToError(errors.New("Username must be between 3 and 32 characters"))
+	}
+
+	// 用户名必需以数字或字母开始
+	compStr := "1234567890" + "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	if !strings.Contains(compStr, string(name[0])) {
+		return nilObjPath, dbusutil.ToError(errors.New("The first character must be a letter or number"))
+	}
+
+	// 用户名必需是数字、字母和_-@字符组成
+	compStr = compStr + "-_@"
+	for _, ch := range name {
+		if !strings.Contains(compStr, string(ch)) {
+			return nilObjPath, dbusutil.ToError(errors.New("Invalid user name"))
+		}
+	}
 	err := checkAccountType(int(accountType))
 	if err != nil {
 		return nilObjPath, dbusutil.ToError(err)
@@ -188,6 +207,11 @@ func (m *Manager) DeleteUser(sender dbus.Sender,
 		logger.Warningf("disable quick login for user %q failed: %v", name, err)
 	}
 
+	// 删除用户前，清空用户的安全密钥
+	err = user.deleteSecretKey()
+	if err != nil {
+		logger.Warning("Delete secret key failed")
+	}
 	// 删除账户前先删除生物特征，避免删除账户后，用户数据找不到
 	if rmFiles {
 		user.clearBiometricChara()
@@ -526,6 +550,12 @@ func (m *Manager) SetTerminalLocked(sender dbus.Sender, locked bool) *dbus.Error
 		return dbusutil.ToError(fmt.Errorf("current terminal lock is equal set locked: %t", locked))
 	}
 
+	err := m.checkAuth(sender)
+	if err != nil {
+		logger.Warning("[SetTerminalLocked] access denied:", err)
+		return dbusutil.ToError(err)
+	}
+
 	if locked {
 		sessions, err := m.login1Manager.ListSessions(0)
 		if err != nil {
@@ -547,7 +577,7 @@ func (m *Manager) SetTerminalLocked(sender dbus.Sender, locked bool) *dbus.Error
 		}
 	}
 
-	err := m.dsAccount.SetValue(0, dsettingsIsTerminalLocked, dbus.MakeVariant(locked))
+	err = m.dsAccount.SetValue(0, dsettingsIsTerminalLocked, dbus.MakeVariant(locked))
 	if err != nil {
 		logger.Warningf("setDsgData key : %s ,value : %t err : %s", dsettingsIsTerminalLocked, locked, err)
 		return dbusutil.ToError(err)

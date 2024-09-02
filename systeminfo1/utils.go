@@ -59,7 +59,7 @@ func runLscpu() (map[string]string, error) {
 	lines := strings.Split(string(out), "\n")
 	res := make(map[string]string, len(lines))
 	for _, line := range lines {
-		items := strings.Split(line, lscpuKeyDelim)
+		items := strings.SplitN(line, lscpuKeyDelim, 2)
 		if len(items) != 2 {
 			continue
 		}

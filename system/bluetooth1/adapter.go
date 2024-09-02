@@ -39,7 +39,7 @@ type adapter struct {
 	poweredActionTime time.Time
 }
 
-var defaultDiscoveringTimeout = 1 * time.Minute
+var defaultDiscoveringTimeout = 30 * time.Second
 
 func newAdapter(systemSigLoop *dbusutil.SignalLoop, objPath dbus.ObjectPath) (a *adapter) {
 	a = &adapter{Path: objPath, autoConnectFinished: false}

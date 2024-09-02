@@ -49,12 +49,9 @@ func DetectPortType(card *pulse.Card, port *pulse.CardPortInfo) int {
 		return PortTypeMultiChannel
 	}
 
-	if hasKeyword(stringList, "speaker") ||
-		hasKeyword(stringList, "input-mic") {
-		if hasKeyword(stringList, "usb") {
-			return PortTypeUsb
-		}
-		return PortTypeBuiltin
+	if hasKeyword(stringList, "bluez") ||
+		hasKeyword(stringList, "bluetooth") {
+		return PortTypeBluetooth
 	}
 
 	if hasKeyword(stringList, "linein") ||
@@ -77,9 +74,9 @@ func DetectPortType(card *pulse.Card, port *pulse.CardPortInfo) int {
 		return PortTypeHdmi
 	}
 
-	if hasKeyword(stringList, "bluez") ||
-		hasKeyword(stringList, "bluetooth") {
-		return PortTypeBluetooth
+	if hasKeyword(stringList, "speaker") ||
+		hasKeyword(stringList, "input-mic") {
+		return PortTypeBuiltin
 	}
 
 	return PortTypeUnknown

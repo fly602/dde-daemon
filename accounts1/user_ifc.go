@@ -581,6 +581,62 @@ func (u *User) DeleteIconFile(sender dbus.Sender, icon string) *dbus.Error {
 	return nil
 }
 
+func (u *User) EnableWechatAuth(sender dbus.Sender, value bool) *dbus.Error {
+	logger.Infof("DBus call EnableWechatAuth sender %v, enabled %t", sender, value)
+	// 验证调用者权限
+	if !u.checkIsControlCenter(sender) {
+		return dbusutil.ToError(fmt.Errorf("not allow %v call this method", sender))
+	}
+	return u.enableWechatAuth(value)
+}
+func (u *User) UpdateWechatAuthState() *dbus.Error {
+	logger.Infof("DBus call UpdateWechatAuthState")
+	// 通过synchelper检查本地账户是否有绑定的UOS ID
+	syncObj := u.service.Conn().Object("com.deepin.sync.Helper", "/com/deepin/sync/Helper")
+	var uosid string
+	err := syncObj.Call("com.deepin.sync.Helper.UOSID", 0).Store(&uosid)
+	if err != nil {
+		logger.Warning(err)
+		return dbusutil.ToError(err)
+	}
+	var ubid string
+	err = syncObj.Call("com.deepin.sync.Helper.LocalBindCheck", 0, uosid, u.UUID).Store(&ubid)
+	if err != nil {
+		logger.Warning(err)
+		return dbusutil.ToError(err)
+	}
+	var isBindWechat bool
+	var wechatNickName string
+	err = syncObj.Call("com.deepin.sync.Helper.LocalBindCheckWechat", 0, uosid, u.UUID).Store(&isBindWechat, &wechatNickName)
+	if err != nil {
+		logger.Warning(err)
+		return dbusutil.ToError(err)
+	}
+	logger.Infof("DBus call UpdateWechatAuthState ubid %v, wechatNickName %v", ubid, wechatNickName)
+	if (ubid == "" || !isBindWechat) && u.WechatAuthEnabled {
+		return u.enableWechatAuth(false)
+	}
+
+	return nil
+}
+
+func (u *User) enableWechatAuth(value bool) *dbus.Error {
+	u.PropsMu.Lock()
+	defer u.PropsMu.Unlock()
+
+	if value == u.WechatAuthEnabled {
+		return nil
+	}
+
+	err := u.writeUserConfigWithChange(confKeyWechatAuthEnabled, value)
+	if err != nil {
+		return dbusutil.ToError(err)
+	}
+
+	u.setPropWechatAuthEnabled(value)
+	return nil
+}
+
 func (u *User) SetDesktopBackgrounds(sender dbus.Sender, val []string) *dbus.Error {
 	logger.Debugf("[SetDesktopBackgrounds] val: %#v", val)
 
@@ -1225,4 +1281,13 @@ func (u *User) DeleteSecretKey(sender dbus.Sender) *dbus.Error {
 		return dbusutil.ToError(err)
 	}
 	return nil
+}
+
+func (u *User) deleteSecretKey() error {
+	if u.uadpInterface == nil {
+		logger.Warning("uadpInterface is nil")
+		return nil
+	}
+
+	return u.uadpInterface.Delete(0, u.UserName)
 }

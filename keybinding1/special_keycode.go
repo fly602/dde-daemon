@@ -121,8 +121,10 @@ func (m *Manager) initSpecialKeycodeMap() {
 	m.specialKeycodeBindingList[key] = m.handleScreenshot
 
 	// 打开设备管理器
-	key = createSpecialKeycodeIndex(KEY_UNKNOWN, false, MODIFY_NONE)
-	m.specialKeycodeBindingList[key] = m.handleOpenDeviceManager
+	if m.deviceManagerControlEnable {
+		key = createSpecialKeycodeIndex(KEY_UNKNOWN, false, MODIFY_NONE)
+		m.specialKeycodeBindingList[key] = m.handleOpenDeviceManager
+	}
 }
 
 // 处理函数的总入口

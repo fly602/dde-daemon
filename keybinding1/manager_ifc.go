@@ -184,6 +184,18 @@ func (m *Manager) ListAllShortcuts() (shortcuts string, busErr *dbus.Error) {
 	return ret, nil
 }
 
+func (m *Manager) EnableSystemShortcut(shortcuts []string, enabled bool, isPersistent bool) *dbus.Error {
+	for _, shortcut := range shortcuts {
+		if enabled {
+			m.DisabledSystemShortcutsList, _ = m.DisabledSystemShortcutsList.Delete(shortcut)
+		} else {
+			m.DisabledSystemShortcutsList, _ = m.DisabledSystemShortcutsList.Add(shortcut)
+		}
+	}
+	logger.Debug("DisabledSystemShortcutsList:", m.DisabledSystemShortcutsList)
+	return nil
+}
+
 func (m *Manager) ListShortcutsByType(type0 int32) (shortcuts string, busErr *dbus.Error) {
 	list := m.shortcutManager.ListByType(type0)
 	ret, err := util.MarshalJSON(list)

@@ -34,6 +34,8 @@ const (
 	polkitActionDisableAutoLogin       = "org.deepin.dde.accounts.disable-auto-login"
 	polkitActionEnableNoPasswordLogin  = "org.deepin.dde.accounts.enable-nopass-login"
 	polkitActionDisableNoPasswordLogin = "org.deepin.dde.accounts.disable-nopass-login"
+	polkitActionEnableWechatAuth       = "org.deepin.dde.accounts.enable-wechat-auth"
+	polkitActionDisableWechatAuth      = "org.deepin.dde.accounts.disable-wechat-auth"
 	polkitActionSetKeyboardLayout      = "org.deepin.dde.accounts.set-keyboard-layout"
 	polkitActionEnableQuickLogin       = "org.deepin.dde.accounts.enable-quick-login"
 	polkitActionDisableQuickLogin      = "org.deepin.dde.accounts.disable-quick-login"

@@ -240,6 +240,16 @@ func (info *SystemInfo) init() {
 			}
 		}
 
+		// 适配兆芯KX-7000
+		if lscpuRes[lscpuKeyCPUfamily] == "7" &&
+			lscpuRes[lscpuKeyModel] == "107" &&
+			lscpuRes[lscpuKeyStepping] == "1" {
+			info.Processor, err = getProcessorByLscpuExt(lscpuRes, info.CPUMaxMHz/1000)
+			if err != nil {
+				logger.Warning(err)
+			}
+		}
+
 		if info.Processor == "" {
 			info.Processor, err = getProcessorByLscpu(lscpuRes)
 			if err != nil {

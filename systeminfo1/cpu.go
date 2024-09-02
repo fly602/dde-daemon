@@ -23,8 +23,35 @@ const (
 	lscpuKeyMaxMHz     = "CPU max MHz"
 	lscpuKeyModelName  = "Model name"
 	lscpuKeyCount      = "CPU(s)"
+	lscpuKeyCPUfamily  = "CPU family"
+	lscpuKeyModel      = "Model"
+	lscpuKeyStepping   = "Stepping"
 	compareAllowMin    = 1e-6
 )
+
+func getProcessorByLscpuExt(data map[string]string, freq float64) (string, error) {
+	modelName, ok := data[lscpuKeyModelName]
+	if !ok {
+		return "", fmt.Errorf("can not find the key %q", lscpuKeyModelName)
+	}
+
+	cpuCountStr, ok := data[lscpuKeyCount]
+	if !ok {
+		logger.Warningf("can not find the key %q", lscpuKeyCount)
+		return modelName, nil
+	}
+
+	cpuCount, err := strconv.ParseInt(cpuCountStr, 10, 64)
+	if err != nil {
+		logger.Warning(err)
+		return modelName, nil
+	}
+	if strings.Contains(modelName, "Hz") {
+		return fmt.Sprintf("%s x %d", modelName, cpuCount), nil
+	} else {
+		return fmt.Sprintf("%s @ %.2fGHz x %d", modelName, freq, cpuCount), nil
+	}
+}
 
 func getProcessorByLscpu(data map[string]string) (string, error) {
 	modelName, ok := data[lscpuKeyModelName]

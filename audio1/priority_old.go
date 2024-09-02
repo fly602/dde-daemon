@@ -62,9 +62,9 @@ func GetPortType(cardName string, portName string) int {
 		return PortTypeMultiChannel
 	}
 
-	if contains(cardName, portName, "speaker") ||
-		contains(cardName, portName, "input-mic") {
-		return PortTypeBuiltin
+	if contains(cardName, portName, "bluez") ||
+		contains(cardName, portName, "bluetooth") {
+		return PortTypeBluetooth
 	}
 
 	if contains(cardName, portName, "linein") ||
@@ -84,9 +84,45 @@ func GetPortType(cardName string, portName string) int {
 		return PortTypeHdmi
 	}
 
+	if contains(cardName, portName, "speaker") ||
+		contains(cardName, portName, "input-mic") {
+		return PortTypeBuiltin
+	}
+
+	return PortTypeUnknown
+}
+
+// 图标类型 扬声器 > 耳机 > HDMI > 蓝牙
+func GetIconPortType(cardName string, portName string) int {
+
+	if contains(cardName, portName, "linein") ||
+		contains(cardName, portName, "lineout") {
+		return PortTypeLineIO
+	}
+
+	if contains(cardName, portName, "speaker") ||
+		contains(cardName, portName, "input-mic") {
+		return PortTypeBuiltin
+	}
+
+	if contains(cardName, portName, "rear-mic") ||
+		contains(cardName, portName, "front-mic") ||
+		contains(cardName, portName, "headset") ||
+		contains(cardName, portName, "headphone") {
+		return PortTypeHeadset
+	}
+
+	if contains(cardName, portName, "hdmi") {
+		return PortTypeHdmi
+	}
+
 	if contains(cardName, portName, "bluez") ||
 		contains(cardName, portName, "bluetooth") {
 		return PortTypeBluetooth
+	}
+
+	if contains(cardName, portName, "usb") {
+		return PortTypeUsb
 	}
 
 	return PortTypeUnknown

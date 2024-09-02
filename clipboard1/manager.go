@@ -358,10 +358,48 @@ func (m *Manager) handleClipboardUpdated(ts x.Timestamp) error {
 		return err
 	}
 	logger.Debug("targets:", targets)
+
+	// 过滤云桌面复制的数据
+	// 判断是否从wps复制的数据并且是否包含text格式
+	var tmpTarget x.Atom
+	hasKingsoftData := false
+	hasTextData := false
+
+	for _, target := range targets {
+		targetName, err := m.xc.GetAtomName(target)
+		targetName = strings.ToLower(targetName)
+		if err == nil {
+			if targetName == "uos/remote-copy" {
+				return nil
+			} else if targetName == "text/plain" {
+				hasTextData = true
+				tmpTarget = target
+			} else if strings.Contains(targetName, "kingsoft") {
+				hasKingsoftData = true
+			}
+		}
+	}
+
+	logger.Debug("hasKingsoftData:", hasKingsoftData, ", hasTextData:", hasTextData)
+
+	// 如果 是从wps复制的数据并且包含text格式数据，则先读取text数据大小
+	// 如果text数据大小超过10M，则只缓存text数据，否则所有格式都缓存
+	if hasKingsoftData && hasTextData {
+		td, err := m.saveTarget(tmpTarget, ts)
+		if err == nil && len(td.Data) > 10*1024*1024 {
+			m.setContent(map[x.Atom]*TargetData{
+				td.Target: td,
+			})
+
+			logger.Debug("handleClipboardUpdated  wps text format finish", ts)
+			return nil
+		}
+	}
+
 	targetDataMap := m.saveTargets(targets, ts)
 	m.setContent(targetDataMap)
 
-	logger.Debug("handleClipboardUpdated finish", ts)
+	logger.Debug("handleClipboardUpdated all format finish", ts)
 	return nil
 }
 
@@ -523,6 +561,47 @@ func (m *Manager) covertClipboardManagerSaveTargets(ev *x.SelectionRequestEvent)
 		targets, err = m.getClipboardTargets(ev.Time)
 		if err != nil {
 			return err
+		}
+	}
+
+	logger.Debug("targets:", targets)
+
+	// 过滤云桌面复制的数据
+	// 判断是否从wps复制的数据并且是否包含text格式
+	var tmpTarget x.Atom
+	hasKingsoftData := false
+	hasTextData := false
+
+	for _, target := range targets {
+		targetName, err := m.xc.GetAtomName(target)
+		targetName = strings.ToLower(targetName)
+		if err == nil {
+			if targetName == "uos/remote-copy" {
+				return nil
+			} else if targetName == "text/plain" {
+				hasTextData = true
+				tmpTarget = target
+			} else if strings.Contains(targetName, "kingsoft") {
+				hasKingsoftData = true
+			}
+		}
+	}
+
+	logger.Debug("hasKingsoftData:", hasKingsoftData, ", hasTextData:", hasTextData)
+
+	// 如果 是从wps复制的数据并且包含text格式数据，则先读取text数据大小
+	// 如果text数据大小超过10M，则只缓存text数据，否则所有格式都缓存
+	if hasKingsoftData && hasTextData {
+		td, err := m.saveTarget(tmpTarget, ev.Time)
+		if err == nil && len(td.Data) > 10*1024*1024 {
+			m.setContent(map[x.Atom]*TargetData{
+				td.Target: td,
+			})
+
+			logger.Debug("covertClipboardManagerSaveTargets  text format finish", ev.Time)
+			m.saveTargetsRequestor = ev.Requestor
+			m.saveTargetsSuccessTime = time.Now()
+			return nil
 		}
 	}
 

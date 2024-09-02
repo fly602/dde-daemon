@@ -343,6 +343,7 @@ func (b *SysBluetooth) handleSessionNew(sessionId string, sessionPath dbus.Objec
 
 func (b *SysBluetooth) handlePrepareForSleep(beforeSleep bool) {
 	if beforeSleep {
+		b.stopDiscovery()
 		logger.Debug("prepare to sleep")
 		return
 	}
@@ -873,6 +874,8 @@ func (b *SysBluetooth) tryConnectPairedDevices(adapterPath dbus.ObjectPath) {
 		return
 	}
 
+	b.setAutoConnectFinishedStatus(adapterPath, false)
+
 	inputOnly := true
 	// 自动连接时长
 	defaultConnectDuration := 2 * time.Minute
@@ -929,6 +932,7 @@ func (b *SysBluetooth) tryConnectPairedDevices(adapterPath dbus.ObjectPath) {
 			})
 			priority++
 		}
+		b.setAutoConnectFinishedStatus(adapterPath, false)
 		b.acm.addDevices(adapterPath, deviceInfos, activeReconnectDevices)
 	}
 }
@@ -1069,4 +1073,38 @@ func (b *SysBluetooth) findFirstConnectedDeviceByIcon(icon string) *device {
 		}
 	}
 	return nil
+}
+
+func (b *SysBluetooth) setAutoConnectFinishedStatus(adapterPath dbus.ObjectPath, status bool) {
+	adapter, err := b.getAdapter(adapterPath)
+	if err != nil {
+		// 可能是适配器被移除了
+		logger.Warningf("call getAdapter failed; adapterPath:[%s] err:[%s]", adapterPath, err)
+		return
+	}
+
+	if !adapter.Powered {
+		// 适配器电源关闭了
+		logger.Warningf("adapter： [%s] is power off", adapterPath)
+		return
+	}
+	adapter.autoConnectFinished = status
+
+	return
+}
+
+func (b *SysBluetooth) stopDiscovery() {
+	b.adaptersMu.Lock()
+	defer b.adaptersMu.Unlock()
+
+	for _, adapter := range b.adapters {
+		if adapter.Discovering {
+			err := adapter.core.Adapter().StopDiscovery(0)
+			if err != nil {
+				logger.Warning(err)
+			}
+		}
+	}
+
+	return
 }

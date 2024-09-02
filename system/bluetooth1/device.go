@@ -612,6 +612,18 @@ func (d *device) doConnect(hasNotify bool) error {
 }
 
 func (d *device) doRealConnect() error {
+	if d.adapter.Discovering {
+		err := d.adapter.core.Adapter().StopDiscovery(0)
+		if err != nil {
+			logger.Warning(err)
+		}
+		defer func() {
+			err = d.adapter.core.Adapter().StartDiscovery(0)
+			if err != nil {
+				logger.Warning(err)
+			}
+		}()
+	}
 	d.setConnectPhase(connectPhaseConnectProfilesStart)
 	err := d.core.Connect(0)
 	d.setConnectPhase(connectPhaseConnectProfilesEnd)

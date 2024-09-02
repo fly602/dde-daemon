@@ -57,6 +57,11 @@ func (v *Manager) GetExportedMethods() dbusutil.ExportedMethods {
 			InArgs: []string{"id", "type0"},
 		},
 		{
+			Name:   "EnableSystemShortcut",
+			Fn:     v.EnableSystemShortcut,
+			InArgs: []string{"shortcuts", "enabled", "isPersistent"},
+		},
+		{
 			Name:    "GetCapsLockState",
 			Fn:      v.GetCapsLockState,
 			OutArgs: []string{"state"},
