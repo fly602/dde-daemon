@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	sessionAgentInterface = "com.deepin.system.Bluetooth.Agent"
+	sessionAgentInterface = "org.deepin.dde.Bluetooth1.Agent"
 )
 
 type authorize struct {

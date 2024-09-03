@@ -9,7 +9,7 @@ import (
 	"time"
 
 	dbus "github.com/godbus/dbus/v5"
-	ipwatchd "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.ipwatchd"
+	ipwatchd "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.ipwatchd1"
 	ofdbus "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.dbus"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
@@ -64,7 +64,7 @@ func (m *Manager) RequestIPConflictCheck(ip, ifc string) *dbus.Error {
 		defer cancel()
 
 		var mac string
-		err = conn.Object("com.deepin.system.IPWatchD", "/com/deepin/system/IPWatchD").CallWithContext(ctx, "com.deepin.system.IPWatchD.RequestIPConflictCheck", 0, ip, ifc).Store(&mac)
+		err = conn.Object("com.deepin.dde.IPWatchD1", "org/deepin/dde/IPWatchD1").CallWithContext(ctx, "org.deepin.dde.IPWatchD1.RequestIPConflictCheck", 0, ip, ifc).Store(&mac)
 		if err != nil {
 			logger.Warning(err)
 		}

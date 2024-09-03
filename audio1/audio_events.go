@@ -435,9 +435,9 @@ func (a *Audio) handleSinkInputChanged(idx uint32) {
 
 /* 创建开启端口的命令，提供给notification调用 */
 func makeNotifyCmdEnablePort(cardId uint32, portName string) string {
-	dest := "com.deepin.daemon.Audio"
-	path := "/com/deepin/daemon/Audio"
-	method := "com.deepin.daemon.Audio.SetPortEnabled"
+	dest := "org.deepin.dde.Audio1"
+	path := "/org/deepin/dde/Audio1"
+	method := "org.deepin.dde.Audio1.SetPortEnabled"
 	return fmt.Sprintf("dbus-send,--type=method_call,--dest=%s,%s,%s,uint32:%d,string:%s,boolean:true",
 		dest, path, method, cardId, portName)
 }

@@ -8,7 +8,7 @@
 
 ## Authority 入口对象
 
-对象路径：/com/deepin/daemon/Authority
+对象路径：/org/deepin/dde/Authority1
 
 ### org.deepin.dde.Authority1 接口
 
@@ -38,7 +38,7 @@ CheckCookie(String user, String cookie) -> (Bool result)
 
 ## 认证事务
 
-对象路径：/com/deepin/daemon/Authority/TranscationN
+对象路径：/org/deepin/dde/Authority1/TranscationN
 
 ### org.deepin.dde.Authority1.Transcation 接口
 

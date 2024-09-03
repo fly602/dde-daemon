@@ -1,4 +1,10 @@
-dde-daemon (6.1.0) UNRELEASED; urgency=medium
+dde-daemon (6.1.1) unstable; urgency=medium
+
+  * chore: cherry-pick paths from professional
+
+ -- fuleyi <fuleyi@uniontech.com>  Mon, 02 Sep 2024 15:18:43 +0800
+
+dde-daemon (6.1.0) unstable; urgency=medium
 
   * 1070代码迁移，接口调整为v23风格
 

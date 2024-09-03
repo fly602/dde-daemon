@@ -15,7 +15,7 @@ import (
 
 	"github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
-	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.inputdevices"
+	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.inputdevices1"
 	power "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.power1"
 	"github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil"
@@ -173,7 +173,7 @@ func (tpad *Touchpad) init() {
 	}
 
 	if tpad.systemConn != nil {
-		sysTouchPad, err := inputdevices.NewTouchpad(tpad.systemConn, "/com/deepin/system/InputDevices/Touchpad")
+		sysTouchPad, err := inputdevices.NewTouchpad(tpad.systemConn, "/org/deepin/dde/InputDevices1/Touchpad")
 		if err != nil {
 			logger.Warning(err)
 		} else {

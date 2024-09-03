@@ -181,8 +181,8 @@ func (ss *ScreenSaver) setTimeout(seconds, interval uint32, blank bool) {
 			logger.Warning(err)
 			return
 		}
-		err = sessionBus.Object("com.deepin.daemon.KWayland",
-			"/com/deepin/daemon/KWayland/Output").Call("com.deepin.daemon.KWayland.Idle.SetIdleTimeout", 0, seconds*1000).Err
+		err = sessionBus.Object("org.deepin.dde.KWayland1",
+			"/org/deepin/dde/KWayland1/Output").Call("org.deepin.dde.KWayland1.Idle.SetIdleTimeout", 0, seconds*1000).Err
 
 		if err != nil {
 			logger.Warning(err)

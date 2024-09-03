@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/godbus/dbus/v5"
-	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
+	kwayland "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.kwayland1"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 
@@ -92,7 +92,7 @@ func (a *Agent) SendNotify(sender dbus.Sender, appName string, replacesId uint32
 			if err != nil {
 				logger.Warning(err)
 			} else {
-				wInfo, err := kwayland.NewWindow(a.sessionService.Conn(), dbus.ObjectPath(fmt.Sprintf("/com/deepin/daemon/KWayland/PlasmaWindow_%v", winId)))
+				wInfo, err := kwayland.NewWindow(a.sessionService.Conn(), dbus.ObjectPath(fmt.Sprintf("/org/deepin/dde/KWayland1/PlasmaWindow_%v", winId)))
 				if err != nil {
 					logger.Warning(err)
 				} else {

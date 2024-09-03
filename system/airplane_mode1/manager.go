@@ -20,7 +20,7 @@ const (
 	dbusPath        = "/org/deepin/dde/AirplaneMode1"
 	dbusInterface   = dbusServiceName
 
-	actionId = "com.deepin.daemon.airplane-mode.enable-disable-any"
+	actionId = "org.deepin.dde.airplane-mode.enable-disable-any"
 )
 
 type device struct {
@@ -78,6 +78,7 @@ func (mgr *Manager) Enable(sender dbus.Sender, enableAirplaneMode bool) *dbus.Er
 	// check auth
 	err := checkAuthorization(actionId, string(sender))
 	if err != nil {
+		logger.Warningf("checkAuthorization failed, err: %v, actionId=%v", err, actionId)
 		return dbusutil.ToError(err)
 	}
 

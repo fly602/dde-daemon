@@ -17,8 +17,8 @@ import (
 
 const (
 	touchpadSwitchFile    = "/proc/uos/touchpad_switch"
-	touchpadDBusPath      = "/com/deepin/system/InputDevices/Touchpad"
-	touchpadDBusInterface = "com.deepin.system.InputDevices.Touchpad"
+	touchpadDBusPath      = "/org/deepin/dde/InputDevices1/Touchpad"
+	touchpadDBusInterface = "org.deepin.dde.InputDevices1.Touchpad"
 )
 
 type Touchpad struct {

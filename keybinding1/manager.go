@@ -20,12 +20,12 @@ import (
 	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/keybinding1/shortcuts"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
-	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
 	lockfront "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.lockfront"
 	shutdownfront "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.shutdownfront"
 	wm "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wm"
 	appmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.application1"
 	inputdevices "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.inputdevices1"
+	kwayland "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.kwayland1"
 	network "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.network1"
 	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	newAppmanager "github.com/linuxdeepin/go-dbus-factory/session/org.desktopspec.applicationmanager1"
@@ -633,13 +633,13 @@ func (m *Manager) listenGlobalAccel(sessionBus *dbus.Conn) error {
 }
 
 func (m *Manager) listenKeyboardEvent(systemBus *dbus.Conn) {
-	err := systemBus.Object("com.deepin.daemon.Gesture",
-		"/com/deepin/daemon/Gesture").AddMatchSignal("com.deepin.daemon.Gesture", "KeyboardEvent").Err
+	err := systemBus.Object("org.deepin.dde.Gesture1",
+		"/org/deepin/dde/Gesture1").AddMatchSignal("org.deepin.dde.Gesture1", "KeyboardEvent").Err
 	if err != nil {
 		logger.Warning(err)
 	}
 	m.systemSigLoop.AddHandler(&dbusutil.SignalRule{
-		Name: "com.deepin.daemon.Gesture.KeyboardEvent",
+		Name: "org.deepin.dde.Gesture1.KeyboardEvent",
 	}, func(sig *dbus.Signal) {
 		if len(sig.Body) > 1 {
 			key := sig.Body[0].(uint32)

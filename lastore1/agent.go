@@ -10,8 +10,8 @@ import (
 	"sync"
 
 	"github.com/godbus/dbus/v5"
-	kwayland "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.kwayland"
 	ControlCenter "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.dde.ControlCenter"
+	kwayland "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.kwayland1"
 	lastore "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.lastore1"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )

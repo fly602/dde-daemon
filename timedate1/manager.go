@@ -13,8 +13,8 @@ import (
 	"github.com/godbus/dbus/v5"
 	ddbus "github.com/linuxdeepin/dde-daemon/dbus"
 	"github.com/linuxdeepin/dde-daemon/session/common"
-	timedated "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.timedated"
 	accounts "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.accounts1"
+	timedated "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.timedate1"
 	timedate1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.timedate1"
 	"github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil"
@@ -85,7 +85,7 @@ type Manager struct {
 
 	settings *gio.Settings
 	td       timedate1.Timedate
-	setter   timedated.Timedated
+	setter   timedated.Timedate
 	userObj  accounts.User
 
 	//nolint
@@ -108,7 +108,7 @@ func NewManager(service *dbusutil.Service) (*Manager, error) {
 
 	m.systemSigLoop = dbusutil.NewSignalLoop(sysBus, 10)
 	m.td = timedate1.NewTimedate(sysBus)
-	m.setter = timedated.NewTimedated(sysBus)
+	m.setter = timedated.NewTimedate(sysBus)
 
 	m.settings = gio.NewSettings(timeDateSchema)
 	m.Use24HourFormat.Bind(m.settings, settingsKey24Hour)

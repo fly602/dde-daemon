@@ -81,8 +81,8 @@ func (m *Manager) handleWakeup() {
 
 	// Fix wayland sometimes no dpms event after wakeup
 	if m.UseWayland {
-		err := m.service.Conn().Object("com.deepin.daemon.KWayland",
-			"/com/deepin/daemon/KWayland/Output").Call("com.deepin.daemon.KWayland.Idle.simulateUserActivity", 0).Err
+		err := m.service.Conn().Object("org.deepin.dde.KWayland1",
+			"/org/deepin/dde/KWayland1/Output").Call("org.deepin.dde.KWayland1.Idle.simulateUserActivity", 0).Err
 
 		if err != nil {
 			logger.Warning(err)

@@ -107,7 +107,7 @@ func getSysGrubObj() (dbus.BusObject, error) {
 		return nil, err
 	}
 
-	obj := sysBus.Object("org.deepin.dde.Grub2", "/com/deepin/daemon/Grub2")
+	obj := sysBus.Object("org.deepin.dde.Grub2", "/org/deepin/dde/Grub2")
 	return obj, nil
 }
 

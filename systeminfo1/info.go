@@ -125,7 +125,7 @@ func (d *Daemon) initSysSystemInfo() {
 	d.sigSystemLoop.Start()
 	d.systeminfo.InitSignalExt(d.sigSystemLoop, true)
 
-	// 通过 demicode 获取 "CPU 频率", 接收 com.deepin.daemon.SystemInfo 的属性 CurrentSpeed 改变信号
+	// 通过 demicode 获取 "CPU 频率", 接收 org.deepin.dde.SystemInfo1 的属性 CurrentSpeed 改变信号
 	err = d.systeminfo.CurrentSpeed().ConnectChanged(func(hasValue bool, value uint64) {
 		logger.Infof("demicode hasValue : %t, CurrentSpeed : %d", hasValue, value)
 		if !hasValue {

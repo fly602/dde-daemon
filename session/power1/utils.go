@@ -646,9 +646,9 @@ func isFloatEqual(f1, f2 float64) bool {
 
 func (m *Manager) getDpmsList() ([]dbus.Variant, error) {
 	sessionBus := m.sessionSigLoop.Conn()
-	sessionObj := sessionBus.Object("com.deepin.daemon.KWayland", "/com/deepin/daemon/KWayland/DpmsManager")
+	sessionObj := sessionBus.Object("org.deepin.dde.KWayland1", "/org/deepin/dde/KWayland1/DpmsManager")
 	var ret []dbus.Variant
-	err := sessionObj.Call("com.deepin.daemon.KWayland.DpmsManager.dpmsList", 0).Store(&ret)
+	err := sessionObj.Call("org.deepin.dde.KWayland1.DpmsManager.dpmsList", 0).Store(&ret)
 	if err != nil {
 		logger.Warning(err)
 		return nil, err
@@ -667,8 +667,8 @@ func (m *Manager) getDpmsModeByKwin() (int32, error) {
 	var dpmsMode int32
 	for i := 0; i < len(list); i++ {
 		v := list[i].Value().(string)
-		sessionObj := m.sessionSigLoop.Conn().Object("com.deepin.daemon.KWayland", dbus.ObjectPath(v))
-		err = sessionObj.Call("com.deepin.daemon.KWayland.Dpms.getDpmsMode", 0).Store(&dpmsMode)
+		sessionObj := m.sessionSigLoop.Conn().Object("org.deepin.dde.KWayland1", dbus.ObjectPath(v))
+		err = sessionObj.Call("org.deepin.dde.KWayland1.Dpms.getDpmsMode", 0).Store(&dpmsMode)
 		if err != nil {
 			logger.Warning(err)
 			return dpmsStateOn, err
@@ -687,8 +687,8 @@ func (m *Manager) setDpmsModeByKwin(mode int32) error {
 
 	for i := 0; i < len(list); i++ {
 		v := list[i].Value().(string)
-		sessionObj := m.sessionSigLoop.Conn().Object("com.deepin.daemon.KWayland", dbus.ObjectPath(v))
-		err = sessionObj.Call("com.deepin.daemon.KWayland.Dpms.setDpmsMode", 0, int32(mode)).Err
+		sessionObj := m.sessionSigLoop.Conn().Object("org.deepin.dde.KWayland1", dbus.ObjectPath(v))
+		err = sessionObj.Call("org.deepin.dde.KWayland1.Dpms.setDpmsMode", 0, int32(mode)).Err
 		if err != nil {
 			logger.Warning(err)
 			return err

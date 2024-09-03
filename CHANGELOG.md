@@ -68,7 +68,7 @@
 *   chore(langselector): remove failed test
 *   fix(audio): trySelectBestPort do not work
 *   change(api): sound effect add more functions
-*   change(api): add sytem service com.deepin.system.Network
+*   change(api): add sytem service org.deepin.dde.Network1
 
 [3.23.1] 2019-03-01
 *   feat(bluetooth): when disconnected quickly after connecting, automatically try to connect
@@ -531,7 +531,7 @@
 
 ## [3.2.4] - 2017-11-09
 #### Features
-*   add com.deepin.daemon.ImageBlur interface
+*   add org.deepin.dde.ImageBlur1 interface
 
 #### Bug Fixes
 *   not show newly installed wechat in launcher

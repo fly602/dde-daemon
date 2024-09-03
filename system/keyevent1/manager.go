@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/godbus/dbus/v5"
-	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.system.inputdevices"
+	inputdevices "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.inputdevices1"
 	"github.com/linuxdeepin/go-lib/dbusutil"
 )
 
@@ -83,7 +83,7 @@ func newManager(service *dbusutil.Service) *Manager {
 	if err != nil {
 		return m
 	}
-	m.touchPad, err = inputdevices.NewTouchpad(sysBus, "/com/deepin/system/InputDevices/Touchpad")
+	m.touchPad, err = inputdevices.NewTouchpad(sysBus, "/org/deepin/dde/InputDevices1/Touchpad")
 	if err != nil {
 		logger.Warning(err)
 	}

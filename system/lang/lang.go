@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	langService = "com.deepin.system.Lang"
+	langService = "org.deepin.dde.Lang1"
 
 	userLocaleConfigFile    = ".config/locale.conf"
 	userLocaleConfigFileTmp = ".config/.locale.conf"

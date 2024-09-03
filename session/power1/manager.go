@@ -329,7 +329,7 @@ func newManager(service *dbusutil.Service) (*Manager, error) {
 		logger.Warning("Get systemPower.IsPowerSaveSupported err :", err)
 	}
 
-	// 绑定com.deepin.daemon.Display的DBus
+	// 绑定org.deepin.dde.Display1的DBus
 	m.display = display.NewDisplay(sessionBus)
 	m.wmDBus = wm.NewWm(sessionBus)
 
@@ -1138,15 +1138,15 @@ func (m *Manager) isSessionActive() bool {
 // wayland下在收到键盘或者鼠标事件后，需要进行系统空闲处理（主要是唤醒屏幕）
 func (m *Manager) listenEventToHandleIdleOff() error {
 	// + 监控按键事件
-	err := m.systemSigLoop.Conn().Object("com.deepin.daemon.Gesture",
-		"/com/deepin/daemon/Gesture").AddMatchSignal("com.deepin.daemon.Gesture", "KeyboardEvent").Err
+	err := m.systemSigLoop.Conn().Object("org.deepin.dde.Gesture1",
+		"/org/deepin/dde/Gesture1").AddMatchSignal("org.deepin.dde.Gesture1", "KeyboardEvent").Err
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 
 	m.systemSigLoop.AddHandler(&dbusutil.SignalRule{
-		Name: "com.deepin.daemon.Gesture.KeyboardEvent",
+		Name: "org.deepin.dde.Gesture1.KeyboardEvent",
 	}, func(sig *dbus.Signal) {
 		if len(sig.Body) > 1 {
 			value := sig.Body[1].(uint32)
@@ -1158,14 +1158,14 @@ func (m *Manager) listenEventToHandleIdleOff() error {
 	})
 
 	// + 监控鼠标移动事件
-	err = m.sessionSigLoop.Conn().Object("com.deepin.daemon.KWayland",
-		"/com/deepin/daemon/KWayland/Output").AddMatchSignal("com.deepin.daemon.KWayland.Output", "CursorMove").Err
+	err = m.sessionSigLoop.Conn().Object("org.deepin.dde.KWayland1",
+		"/org/deepin/dde/KWayland1/Output").AddMatchSignal("org.deepin.dde.KWayland1.Output", "CursorMove").Err
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 	m.sessionSigLoop.AddHandler(&dbusutil.SignalRule{
-		Name: "com.deepin.daemon.KWayland.Output.CursorMove",
+		Name: "org.deepin.dde.KWayland1.Output.CursorMove",
 	}, func(sig *dbus.Signal) {
 		if len(sig.Body) > 1 {
 			if m.getDPMSMode() != dpmsStateOn {
@@ -1176,14 +1176,14 @@ func (m *Manager) listenEventToHandleIdleOff() error {
 	})
 
 	// + 监控鼠标按下事件
-	err = m.sessionSigLoop.Conn().Object("com.deepin.daemon.KWayland",
-		"/com/deepin/daemon/KWayland/Output").AddMatchSignal("com.deepin.daemon.KWayland.Output", "ButtonPress").Err
+	err = m.sessionSigLoop.Conn().Object("org.deepin.dde.KWayland1",
+		"/org/deepin/dde/KWayland1/Output").AddMatchSignal("org.deepin.dde.KWayland1.Output", "ButtonPress").Err
 	if err != nil {
 		logger.Warning(err)
 		return err
 	}
 	m.sessionSigLoop.AddHandler(&dbusutil.SignalRule{
-		Name: "com.deepin.daemon.KWayland.Output.ButtonPress",
+		Name: "org.deepin.dde.KWayland1.Output.ButtonPress",
 	}, func(sig *dbus.Signal) {
 		if len(sig.Body) > 1 {
 			if m.getDPMSMode() != dpmsStateOn {

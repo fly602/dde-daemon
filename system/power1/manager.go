@@ -251,7 +251,7 @@ func (m *Manager) init() error {
 }
 
 func (m *Manager) initDsgConfig() error {
-	logger.Info("com.deepin.system.Power module start init dconfig.")
+	logger.Info("org.deepin.dde.Power1 module start init dconfig.")
 	// dsg 配置
 	ds := ConfigManager.NewConfigManager(m.service.Conn())
 

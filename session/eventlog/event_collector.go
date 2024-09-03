@@ -28,8 +28,8 @@ type BaseCollector interface {
 }
 
 const (
-	dbusServiceName = "com.deepin.daemon.EventLog"
-	dbusPath        = "/com/deepin/daemon/EventLog"
+	dbusServiceName = "org.deepin.dde.EventLog1"
+	dbusPath        = "/org/deepin/dde/EventLog1"
 	dbusInterface   = dbusServiceName
 )
 

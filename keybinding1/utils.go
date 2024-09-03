@@ -404,8 +404,8 @@ func (m *Manager) doLock(autoStartAuth bool) {
 
 func doPrepareSuspend() {
 	sessionDBus, _ := dbus.SessionBus()
-	obj := sessionDBus.Object("com.deepin.daemon.Power", "/com/deepin/daemon/Power")
-	err := obj.Call("com.deepin.daemon.Power.SetPrepareSuspend", 0, suspendStateButtonClick).Err
+	obj := sessionDBus.Object("org.deepin.dde.Power1", "/org/deepin/dde/Power1")
+	err := obj.Call("org.deepin.dde.Power1.SetPrepareSuspend", 0, suspendStateButtonClick).Err
 	if err != nil {
 		logger.Warning(err)
 	}
@@ -413,8 +413,8 @@ func doPrepareSuspend() {
 
 func undoPrepareSuspend() {
 	sessionDBus, _ := dbus.SessionBus()
-	obj := sessionDBus.Object("com.deepin.daemon.Power", "/com/deepin/daemon/Power")
-	err := obj.Call("com.deepin.daemon.Power.SetPrepareSuspend", 0, suspendStateFinish).Err
+	obj := sessionDBus.Object("org.deepin.dde.Power1", "/org/deepin/dde/Power1")
+	err := obj.Call("org.deepin.dde.Power.SetPrepareSuspend", 0, suspendStateFinish).Err
 	if err != nil {
 		logger.Warning(err)
 	}

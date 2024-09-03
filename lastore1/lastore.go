@@ -9,7 +9,7 @@ import (
 
 	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/common/dsync"
-	eventLog "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.EventLog"
+	eventLog "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.EventLog1"
 	network "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.network1"
 	notifications "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.notifications"
 	lastore "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.lastore1"

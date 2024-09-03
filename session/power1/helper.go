@@ -18,7 +18,7 @@ import (
 	login1 "github.com/linuxdeepin/go-dbus-factory/system/org.freedesktop.login1"
 
 	// session bus
-	display "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.daemon.display"
+	display "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.display1"
 	sessionmanager "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionmanager1"
 	sessionwatcher "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.sessionwatcher1"
 	screensaver "github.com/linuxdeepin/go-dbus-factory/session/org.freedesktop.screensaver"
