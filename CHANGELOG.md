@@ -47,7 +47,7 @@
 *   feat(dde-session-daemon): sync login sound config after all module started
 *   fix(soundeffect): still play login sound even if sound effect switch is off
 *   chore: auto pull translation files from transifex
-*   change(api): com.deepin.daemon.Greeter add method UpdateGreeterQtTheme
+*   change(api): org.deepin.dde.Greeter1 add method UpdateGreeterQtTheme
 *   fix: ScreenScaleFactors cannot be easily parsed by greeter
 *   feat: also set the screen scale factors of the greeter
 *   fix(accounts): user was not added to some groups when creating user

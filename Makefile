@@ -16,8 +16,8 @@ TEST = \
     ${GOPKG_PREFIX}/appinfo \
     ${GOPKG_PREFIX}/apps1 \
     ${GOPKG_PREFIX}/audio1 \
-    ${GOPKG_PREFIX}/bin/backlight_helper1 \
-    ${GOPKG_PREFIX}/bin/backlight_helper1/ddcci \
+    ${GOPKG_PREFIX}/bin/backlight_helper \
+    ${GOPKG_PREFIX}/bin/backlight_helper/ddcci \
     ${GOPKG_PREFIX}/bin/dde-authority \
     ${GOPKG_PREFIX}/bin/dde-greeter-setter \
     ${GOPKG_PREFIX}/bin/dde-lockservice \
@@ -98,7 +98,7 @@ BINARIES =  \
 	    dde-system-daemon \
 	    grub2 \
 	    search \
-	    backlight_helper1 \
+	    backlight_helper \
 	    langselector \
 	    soundeffect \
 	    dde-lockservice \
@@ -134,7 +134,7 @@ translate: $(addsuffix /LC_MESSAGES/dde-daemon.mo, $(addprefix out/locale/, ${LA
 pot:
 	deepin-update-pot misc/po/locale_config.ini
 
-POLICIES=accounts grub2 fprintd
+POLICIES=accounts1 Grub2 Fprintd1
 ts:
 	for i in $(POLICIES); do \
 		deepin-policy-ts-convert policy2ts misc/polkit-action/org.deepin.dde.$$i.policy.in misc/ts/org.deepin.dde.$$i.policy; \
@@ -180,7 +180,10 @@ install: build install-dde-data install-icons
 	cp -r misc/usr/share/deepin ${DESTDIR}${PREFIX}/share/
 
 	mkdir -pv ${DESTDIR}/lib/systemd/user/
-	cp -f misc/systemd/services/* ${DESTDIR}/lib/systemd/user/
+	cp -f misc/systemd/services/user/* ${DESTDIR}/lib/systemd/user/
+
+	mkdir -pv ${DESTDIR}/lib/systemd/system/
+	cp -f misc/systemd/services/system/* ${DESTDIR}/lib/systemd/system/
 
 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/user/dde-session-initialized.target.wants/
 	ln -s $(PREFIX)/lib/systemd/user/org.dde.session.Daemon1.service $(DESTDIR)$(PREFIX)/lib/systemd/user/dde-session-initialized.target.wants/org.dde.session.Daemon1.service

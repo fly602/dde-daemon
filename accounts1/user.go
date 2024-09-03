@@ -18,7 +18,7 @@ import (
 
 	dbus "github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/accounts1/users"
-	authenticate "github.com/linuxdeepin/go-dbus-factory/system/com.deepin.daemon.authenticate"
+	authenticate "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.authenticate1"
 	uadp "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.uadp1"
 	glib "github.com/linuxdeepin/go-gir/glib-2.0"
 	"github.com/linuxdeepin/go-lib/dbusutil"

@@ -20,8 +20,8 @@ import (
 //go:generate dbusutil-gen em -type Manager
 
 const (
-	dbusServiceName = "com.deepin.daemon.Greeter"
-	dbusPath        = "/com/deepin/daemon/Greeter"
+	dbusServiceName = "org.deepin.dde.Greeter1"
+	dbusPath        = "/org/deepin/dde/Greeter1"
 	dbusInterface   = dbusServiceName
 )
 

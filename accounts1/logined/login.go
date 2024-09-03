@@ -33,7 +33,7 @@ type Manager struct {
 }
 
 const (
-	DBusPath = "/com/deepin/daemon/Logined"
+	DBusPath = "/org/deepin/dde/Logined"
 )
 
 // Register register and install loginedManager on dbus
@@ -201,5 +201,5 @@ func (m *Manager) marshalUserSessions() string {
 }
 
 func (*Manager) GetInterfaceName() string {
-	return "com.deepin.daemon.Logined"
+	return "org.deepin.dde.Logined"
 }

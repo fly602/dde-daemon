@@ -1,4 +1,5 @@
 [D-BUS Service]
 Name=org.deepin.dde.BacklightHelper1
-Exec=/usr/lib/deepin-daemon/backlight_helper
+Exec=/bin/false
 User=root
+SystemdService=deepin-helper-backlight.service
