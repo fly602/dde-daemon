@@ -16,6 +16,7 @@ import (
 	"github.com/godbus/dbus/v5"
 	"github.com/linuxdeepin/dde-daemon/keybinding1/util"
 	wm "github.com/linuxdeepin/go-dbus-factory/session/com.deepin.wm"
+	launcher "github.com/linuxdeepin/go-dbus-factory/session/org.deepin.dde.launcher1"
 	daemon "github.com/linuxdeepin/go-dbus-factory/system/org.deepin.dde.daemon1"
 	gio "github.com/linuxdeepin/go-gir/gio-2.0"
 	"github.com/linuxdeepin/go-lib/gettext"
@@ -114,6 +115,7 @@ type ShortcutManager struct {
 	conn         *x.Conn
 	dataConn     *x.Conn // conn for receive record event
 	daemonDaemon daemon.Daemon
+	launcher     launcher.Launcher
 
 	idShortcutMap     map[string]Shortcut
 	idShortcutMapMu   sync.Mutex
@@ -199,8 +201,21 @@ func NewShortcutManager(conn *x.Conn, keySymbols *keysyms.KeySymbols, eventCb Ke
 	if err != nil {
 		logger.Warning("init system D-BUS failed: ", err)
 	}
-
+	err = ss.initSessionDaemon()
+	if err != nil {
+		logger.Warning("init session D-BUS failed: ", err)
+	}
 	return ss
+}
+
+func (sm *ShortcutManager) initSessionDaemon() error {
+	sessionBus, err := dbus.SessionBus()
+	if err != nil {
+		logger.Warning(err)
+		return err
+	}
+	sm.launcher = launcher.NewLauncher(sessionBus)
+	return nil
 }
 
 func (sm *ShortcutManager) recordEventLoop() {
@@ -784,8 +799,7 @@ func (sm *ShortcutManager) handleXRecordKeyEvent(pressed bool, code uint8, state
 			// 显示桌面快捷键是窗管控制，此处需要隐藏启动器
 			if shortcut != nil && shortcut.GetType() == ShortcutTypeWM && shortcut.GetId() == "show-desktop" {
 				go func() {
-					cmd := "dbus-send --print-reply --dest=org.deepin.dde.Launcher1 /org/deepin/dde/Launcher1 org.deepin.dde.Launcher1.Hide"
-					err := exec.Command("/bin/sh", "-c", cmd).Run()
+					err := sm.launcher.Hide(0)
 					if err != nil {
 						logger.Warning(err)
 					}

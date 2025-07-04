@@ -280,6 +280,8 @@ func (d *Display) doDetectSupportWayland(sender dbus.Sender) (bool, error) {
 		if err != nil {
 			logger.Warning(err)
 			return false, err
+		} else {
+			logger.Warning("execPath: ", execPath)
 		}
 		var cmd *exec.Cmd
 		if execPath == "/usr/bin/lightdm-deepin-greeter" {

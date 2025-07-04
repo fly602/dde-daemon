@@ -7,8 +7,8 @@ package inputdevices1
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -634,10 +634,6 @@ func setSupportAcpiDeviceEnable(devicePath string) error {
 	}
 	logger.Infof("paths[0] %s,paths[1] %s", paths[0], paths[1])
 
-	cmd := exec.Command("/bin/sh", "-c", "echo "+paths[1]+"> "+paths[0])
-	err := cmd.Run()
-	if err != nil {
-		return err
-	}
+	ioutil.WriteFile(paths[0], []byte(paths[1]+"\n"), 0644)
 	return nil
 }

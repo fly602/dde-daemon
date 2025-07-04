@@ -119,17 +119,6 @@ func (m *Manager) setDDEBlackScreenActive(active bool) {
 		}
 	}
 
-	blackscreenCmd := "dbus-send --print-reply --dest=org.kde.KWin /BlackScreen org.kde.kwin.BlackScreen.setActive boolean:"
-	if active {
-		blackscreenCmd = blackscreenCmd + "true"
-	} else {
-		blackscreenCmd = blackscreenCmd + "false"
-	}
-	cmd := exec.Command("/bin/bash", "-c", blackscreenCmd)
-	err = cmd.Run()
-	if err != nil {
-		logger.Warning("Set wm blackscreen failed", err)
-	}
 }
 
 func (m *Manager) getDPMSMode() int32 {

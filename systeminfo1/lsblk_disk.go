@@ -150,6 +150,6 @@ func parseLsblkOutput(out []byte) (*lsblkOutput, error) {
 }
 
 func execLsblk() ([]byte, error) {
-	lsblk := "lsblk -J -bno NAME,SERIAL,TYPE,SIZE,VENDOR,MODEL,MOUNTPOINT,UUID"
-	return exec.Command("/bin/sh", "-c", lsblk).CombinedOutput()
+	cmd := exec.Command("lsblk", "-J", "-bno", "NAME,SERIAL,TYPE,SIZE,VENDOR,MODEL,MOUNTPOINT,UUID")
+	return cmd.CombinedOutput()
 }

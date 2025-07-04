@@ -202,8 +202,12 @@ func copyXDGDirConfig(home, lang string) error {
 }
 
 func changeDirOwner(user, dir string) error {
-	cmd := fmt.Sprintf("chown -hR %s:%s %s", user, user, dir)
-	return doAction(cmd)
+	cmd := exec.Command("chown", "-hR", fmt.Sprintf("%s:%s", user, user), dir)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("Failed to change dir owner: %w\n Output: %s", err, output)
+	}
+	return nil
 }
 
 func getDefaultLang() string {
@@ -231,13 +235,4 @@ func getDefaultLang() string {
 	}
 
 	return strings.Split(locale, ".")[0]
-}
-
-func doAction(cmd string) error {
-	out, err := exec.Command("/bin/sh", "-c", cmd).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf(string(out))
-	}
-
-	return nil
 }

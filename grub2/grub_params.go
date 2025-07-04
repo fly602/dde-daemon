@@ -38,7 +38,8 @@ const (
 )
 
 func decodeShellValue(in string) string {
-	output, err := exec.Command("/bin/sh", "-c", "echo -n "+in).Output()
+	cmd := exec.Command("echo", "-n", in)
+	output, err := cmd.Output()
 	if err != nil {
 		// fallback
 		return strings.Trim(in, "\"")
