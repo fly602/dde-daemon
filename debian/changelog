@@ -1,3 +1,9 @@
+dde-daemon (6.1.60) UNRELEASED; urgency=medium
+
+  * 优化音频 
+
+ -- fuleyi <fuleyi@uniontech.com>  Mon, 20 Oct 2025 16:25:48 +0800
+
 dde-daemon (6.1.59) unstable; urgency=medium
 
   * fix: revert device listener thread management to fix CPU usage

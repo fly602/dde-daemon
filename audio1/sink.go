@@ -123,18 +123,13 @@ func (s *Sink) SetMono(enable bool) error {
 	logger.Debug("set sink mono :", enable)
 	var err error
 	var out []byte
-	if enable {
-		logger.Debugf("monoEnable.sh --sink_master=%s", s.Name)
-		out, err = exec.Command("/usr/share/dde-daemon/audio/monoEnable.sh", "--sink_master="+s.Name).CombinedOutput()
-		if err != nil {
-			logger.Warningf("failed to enable sink mono %v %s", err, out)
-		}
-	} else {
-		defaultSink := s.audio.context().GetDefaultSink()
-		if defaultSink == "" {
-			return fmt.Errorf("default sink is nil")
-		}
-		if !isPhysicalDevice(defaultSink) {
+
+	defaultSink := s.audio.context().GetDefaultSink()
+	if defaultSink == "" {
+		return fmt.Errorf("default sink is nil")
+	}
+	if !isPhysicalDevice(defaultSink) {
+		if !enable {
 			master := s.audio.getMasterNameFromVirtualDevice(defaultSink)
 			if master == "" {
 				return fmt.Errorf("failed to get virtual device sinkInfo for name: %s", defaultSink)
@@ -143,12 +138,17 @@ func (s *Sink) SetMono(enable bool) error {
 			if sinkInfo == nil {
 				return fmt.Errorf("failed to get virtual device sinkInfo for name: %s", master)
 			}
-			s.audio.context().SetDefaultSink(defaultSink)
-			out, err = exec.Command("pactl", "unload-module", "module-remap-sink").CombinedOutput()
-			if err != nil {
-				logger.Warningf("failed to disable sink mono %v %s", err, out)
-			}
+			logger.Warning("set mono false, set default sink to", sinkInfo.Name)
+			s.audio.context().SetDefaultSink(sinkInfo.Name)
 		}
+		out, err = exec.Command("pactl", "unload-module", "module-remap-sink").CombinedOutput()
+		if err != nil {
+			logger.Warningf("failed to disable sink mono %v %s", err, out)
+		}
+	}
+	if enable {
+		// sink_master并非标准接口，而是识别物理设备对应的sink
+		s.audio.context().LoadModule("module-remap-sink", fmt.Sprintf("sink_name=remap-sink-mono channels=1 channel_map=mono sink_master=%s", s.Name))
 	}
 	return err
 }

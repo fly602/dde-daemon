@@ -21,15 +21,13 @@ type PortConfig struct {
 	IncreaseVolume bool
 	Balance        float64
 	ReduceNoise    bool
+	Mode           string // 端口可选的配置文件(模式/编解码等)
 	Mute           bool   // 静音改为全局，此配置废弃
-	PreferProfile  string //优先设置的配置文件
 }
 
 type CardConfig struct {
-	Name          string
-	Ports         map[string]*PortConfig // Name => PortConfig
-	PreferPort    string                 // 期望输出端口，用于恢复配置，目前仅考虑输出端口的自动切换与恢复配置，防止频繁自动切换
-	PreferProfile string                 // 声卡期望配置文件，用于自动切换
+	Name  string
+	Ports map[string]*PortConfig // Name => PortConfig
 }
 
 type MuteConfig struct {
@@ -105,6 +103,7 @@ func NewPortConfig(name string) *PortConfig {
 		IncreaseVolume: false,
 		Balance:        0.0,
 		ReduceNoise:    defaultReduceNoise,
+		Mode:           "",
 		Mute:           false,
 	}
 }
@@ -209,80 +208,6 @@ func (ck *ConfigKeeper) SetEnabled(cardName string, portName string, enabled boo
 	ck.Save()
 }
 
-func (ck *ConfigKeeper) SetProfile(cardName string, profile string) {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	card, ok := ck.Cards[cardName]
-	if !ok {
-		return
-	}
-	card.PreferProfile = profile
-	ck.Save()
-}
-
-func (ck *ConfigKeeper) SetPortProfile(cardName string, portName string, profile string) {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	card, ok := ck.Cards[cardName]
-	if !ok {
-		return
-	}
-	port, ok := card.Ports[portName]
-	if !ok {
-		return
-	}
-	port.PreferProfile = profile
-	ck.Save()
-}
-
-func (ck *ConfigKeeper) SetCardPreferPort(cardName string, portName string) {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	card, ok := ck.Cards[cardName]
-	if !ok {
-		return
-	}
-	_, ok = card.Ports[portName]
-	if !ok {
-		return
-	}
-	card.PreferPort = portName
-	ck.Save()
-}
-
-func (ck *ConfigKeeper) GetCardPreferPort(cardName string) string {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	card, ok := ck.Cards[cardName]
-	if !ok {
-		return ""
-	}
-	return card.PreferPort
-}
-
-func (ck *ConfigKeeper) GetCardPreferProfile(cardName string) string {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	card, ok := ck.Cards[cardName]
-	if !ok {
-		return ""
-	}
-	return card.PreferProfile
-}
-
-func (ck *ConfigKeeper) GetPortProfile(cardName string, portName string) string {
-	ck.mu.Lock()
-	defer ck.mu.Unlock()
-
-	_, port := ck.GetCardAndPortConfig(cardName, portName)
-	return port.PreferProfile
-}
-
 func (ck *ConfigKeeper) SetVolume(cardName string, portName string, volume float64) {
 	ck.mu.Lock()
 	defer ck.mu.Unlock()
@@ -317,6 +242,23 @@ func (ck *ConfigKeeper) SetReduceNoise(cardName string, portName string, reduce 
 	_, port := ck.GetCardAndPortConfig(cardName, portName)
 	port.ReduceNoise = reduce
 	ck.Save()
+}
+
+func (ck *ConfigKeeper) SetMode(cardName string, portName string, mode string) {
+	ck.mu.Lock()
+	defer ck.mu.Unlock()
+
+	_, port := ck.GetCardAndPortConfig(cardName, portName)
+	port.Mode = mode
+	ck.Save()
+}
+
+func (ck *ConfigKeeper) GetMode(cardName string, portName string) string {
+	ck.mu.Lock()
+	defer ck.mu.Unlock()
+
+	_, port := ck.GetCardAndPortConfig(cardName, portName)
+	return port.Mode
 }
 
 func (ck *ConfigKeeper) SetMuteOutput(mute bool) {

@@ -101,22 +101,39 @@ func (c *Card) update(card *pulse.Card) {
 	filterList := strv.Strv(portFilterList)
 	// 清空端口列表，避免端口列表中存在旧的端口信息
 	c.Ports = make(pulse.CardPortInfos, 0)
+	isBlue := isBluezAudio(card.Name)
 	for _, port := range card.Ports {
 		if filterList.Contains(port.Name) {
 			logger.Debug("filter port", port.Name)
 			port.Available = pulse.AvailableTypeNo
 		} else {
 			/* 蓝牙声卡的端口需要过滤 */
-			if isBluezAudio(card.Name) {
+			if isBlue {
 				if c.BluezMode() == bluezModeA2dp && port.Direction == pulse.DirectionSource {
 					// a2dp模式过滤输入端口
 					logger.Debugf("filter bluez input port %s", port.Name)
 					port.Available = pulse.AvailableTypeNo
 				}
+				switch port.Name {
+				case "headset-output":
+					port.Priority += PriorityHandset
+				case "headset-hf-output":
+					port.Priority += PriorityHandfree
+				}
 			}
 		}
 		c.Ports = append(c.Ports, port)
 	}
+
+	// 根据端口优先级排序，顺序由低到高
+	c.sortPortsByPriority(card)
+}
+
+// sortPortsByPriority 根据端口的 Priority 属性排序，Priority 值小的在前（由低到高）
+func (c *Card) sortPortsByPriority(card *pulse.Card) {
+	sort.SliceStable(c.Ports, func(i, j int) bool {
+		return c.Ports[i].Priority < c.Ports[j].Priority
+	})
 }
 
 func (c *Card) tryGetProfileByPort(portName string) (string, error) {
@@ -129,7 +146,7 @@ func (c *Card) tryGetProfileByPort(portName string) (string, error) {
 
 func (c *Card) filterProfile(card *pulse.Card) {
 	var profiles ProfileList
-	blacklist := profileBlacklist(card)
+	blacklist := profileBlacklist()
 	for _, p := range c.Profiles {
 		// skip unavailable and blacklisted profiles
 		if p.Available == 0 || blacklist.Contains(p.Name) {
@@ -304,4 +321,62 @@ func getPassablePort(ports pulse.CardPortInfos, direction int) (port *pulse.Card
 		}
 	}
 	return port
+}
+
+type ChangeType uint32
+
+const (
+	NoChange       ChangeType = 0         // 无任何变化
+	ProfileChanged ChangeType = 1 << iota // 配置文件变化 (0x1)
+	PortChanged                           // 端口变化 (0x2)
+)
+
+func (card *Card) doDiff(oldCard *Card) ChangeType {
+	var changed ChangeType = NoChange
+
+	// 检查配置文件变化
+	if oldCard.ActiveProfile != nil && card.ActiveProfile != nil {
+		if oldCard.ActiveProfile.Name != card.ActiveProfile.Name {
+			logger.Infof("card %s profile changed from %v to %v",
+				card.Name, oldCard.ActiveProfile.Name, card.ActiveProfile.Name)
+			changed |= ProfileChanged
+		}
+	}
+
+	// 检查配置文件列表变化
+	if len(oldCard.Profiles) != len(card.Profiles) {
+		logger.Infof("card %s profiles changed", card.Name)
+		changed |= ProfileChanged
+	}
+
+	// 检查端口变化
+	if len(oldCard.Ports) != len(card.Ports) {
+		logger.Infof("card %s Ports changed", card.Name)
+		changed |= PortChanged
+	} else {
+		// 检查端口可用性变化
+		for _, oldPort := range oldCard.Ports {
+			newPort, err := card.Ports.Get(oldPort.Name, oldPort.Direction)
+			if err != nil {
+				logger.Warning(err)
+				continue
+			}
+
+			if newPort.Available != oldPort.Available {
+				logger.Debugf("card port available changed, %v.%v from %v to %v",
+					oldCard.Name, oldPort.Name, oldPort.Available, newPort.Available)
+				changed |= PortChanged
+
+				// 处理端口禁用通知
+				_, portConfig := GetConfigKeeper().GetCardAndPortConfig(oldCard.Name, oldPort.Name)
+				logger.Warningf("portConfig: %+v", portConfig)
+				if !portConfig.Enabled && newPort.Available != pulse.AvailableTypeNo {
+					logger.Debugf("port<%s,%s> notify", card.Name, oldPort.Name)
+					notifyPortDisabled(card.Id, oldPort)
+				}
+			}
+		}
+	}
+
+	return changed
 }
