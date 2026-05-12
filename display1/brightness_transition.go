@@ -15,8 +15,9 @@ import (
 
 // transitionState 单个显示器的渐变状态
 type transitionState struct {
-	mu           sync.Mutex     // 保护 running 和 currentValue
+	mu           sync.Mutex     // 保护 running/stopping/currentValue
 	running      bool           // 是否正在执行渐变
+	stopping     bool           // 是否正在停止（防止 WaitGroup 重入 panic）
 	currentValue float64        // 当前渐变的实时亮度值
 	stopCh       chan struct{}  // 停止信号
 	wg           sync.WaitGroup // 等待渐变完成
@@ -141,17 +142,20 @@ func (bt *BrightnessTransition) stopState(state *transitionState) {
 		return
 	}
 	state.mu.Lock()
-	isRunning := state.running
-	state.mu.Unlock()
-	if !isRunning {
+	if !state.running || state.stopping {
+		state.mu.Unlock()
 		return
 	}
+	state.stopping = true
 	// 发送停止信号（非阻塞）
 	select {
 	case state.stopCh <- struct{}{}:
 	default:
 	}
-	// 等待渐变完成
+	state.mu.Unlock()
+	// 等待渐变 goroutine 结束
+	// goroutine 会设置 running=false 后 unlock，再调用 wg.Done()
+	// 期间 stopping=true 阻止新的 setBrightnessInternal 启动新渐变
 	state.wg.Wait()
 	// 清空可能残留的停止信号
 	select {
@@ -187,10 +191,8 @@ func (bt *BrightnessTransition) setBrightnessInternal(monitorName string, target
 	var currentBrightness float64
 	var hasCurrentValue bool
 	state.mu.Lock()
-	if state.running {
-		currentBrightness = state.currentValue
-		hasCurrentValue = true
-	}
+	currentBrightness = state.currentValue
+	hasCurrentValue = true
 	state.mu.Unlock()
 	// 如果没有实时值，从 Manager 获取
 	if !hasCurrentValue {
@@ -235,6 +237,7 @@ func (bt *BrightnessTransition) setBrightnessInternal(monitorName string, target
 		defer func() {
 			state.mu.Lock()
 			state.running = false
+			state.stopping = false
 			state.mu.Unlock()
 		}()
 		currentValue := currentBrightness

@@ -90,14 +90,14 @@ const (
 	DSettingsKeyCustomDisplayMode        = "customDisplayMode"
 
 	// 亮度曲线配置
-	DSettingsKeyBacklightCurveType       = "backlight-curve-type"
-	DSettingsKeyBacklightMinValue        = "backlight-curve-min-value"
-	DSettingsKeyBacklightMidValue        = "backlight-curve-mid-value"
-	DSettingsKeyBrightnessPercentage     = "brightness-percentage"
-	DSettingsKeyCanSetBrightnessDelay    = "can-set-brightness-delay-interval"
-	DSettingsKeyCustomBrightnessCurves   = "custom-brightness-curves"
-	DSettingsKeyDefaultBrightnessCurve   = "default-brightness-curve"
-	DSettingsKeyMaxBrightnessUnlimited   = "max-brightness-unlimited"
+	DSettingsKeyBacklightCurveType     = "backlight-curve-type"
+	DSettingsKeyBacklightMinValue      = "backlight-curve-min-value"
+	DSettingsKeyBacklightMidValue      = "backlight-curve-mid-value"
+	DSettingsKeyBrightnessPercentage   = "brightness-percentage"
+	DSettingsKeyCanSetBrightnessDelay  = "can-set-brightness-delay-interval"
+	DSettingsKeyCustomBrightnessCurves = "custom-brightness-curves"
+	DSettingsKeyDefaultBrightnessCurve = "default-brightness-curve"
+	DSettingsKeyMaxBrightnessUnlimited = "max-brightness-unlimited"
 
 	// 渐变亮度配置
 	DSettingsKeyABTransitionEnabled      = "transition-enabled"
@@ -118,7 +118,7 @@ const (
 	DSettingsKeyABCurve                        = "lux-brightness-curve"
 
 	// 卡尔曼滤波器配置
-	DSettingsKeyABKalmanProcessNoise    = "kalman-process-noise"
+	DSettingsKeyABKalmanProcessNoise     = "kalman-process-noise"
 	DSettingsKeyABKalmanMeasurementNoise = "kalman-measurement-noise"
 	DSettingsKeyABKalmanWindowSize       = "kalman-window-size"
 
@@ -272,9 +272,9 @@ type Manager struct {
 	isVM bool
 
 	// 自动亮度相关属性
-	AutoBrightnessEnabled   bool   `prop:"access:rw"`
-	AutoBrightnessSupported bool   `prop:"access:r"`
-	CurveMaxScale          int32  `prop:"access:r"`
+	AutoBrightnessEnabled   bool  `prop:"access:rw"`
+	AutoBrightnessSupported bool  `prop:"access:r"`
+	CurveMaxScale           int32 `prop:"access:r"`
 
 	// 自动亮度管理器
 	autoBrightnessManager *AutoBrightnessManager
@@ -3623,12 +3623,6 @@ func (m *Manager) isPowerSaving() bool {
 	return m.powerSaving
 }
 
-func (m *Manager) setSystemAdjusting(adjusting bool) {
-	if m.autoBrightnessManager != nil {
-		m.autoBrightnessManager.setSystemAdjusting(adjusting)
-	}
-}
-
 // holdAutoBrightness 通知系统休眠
 func (m *Manager) holdAutoBrightness() {
 	if m.autoBrightnessManager != nil {
@@ -3641,20 +3635,6 @@ func (m *Manager) resumeAutoBrightness() {
 	if m.autoBrightnessManager != nil {
 		m.autoBrightnessManager.resume()
 	}
-}
-
-// scheduleSystemAdjustingClear 延迟清除系统调整标志
-func (m *Manager) scheduleSystemAdjustingClear(delay time.Duration) {
-	m.systemAdjustingTimerMu.Lock()
-	defer m.systemAdjustingTimerMu.Unlock()
-
-	if m.systemAdjustingTimer != nil {
-		m.systemAdjustingTimer.Stop()
-	}
-	m.systemAdjustingTimer = time.AfterFunc(delay, func() {
-		m.setSystemAdjusting(false)
-		logger.Debug("system adjusting flag cleared after delay")
-	})
 }
 
 // cleanupAutoBrightness 清理自动亮度资源

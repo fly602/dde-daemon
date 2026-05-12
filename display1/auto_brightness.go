@@ -12,6 +12,7 @@ import (
 
 	"github.com/godbus/dbus/v5"
 	configManager "github.com/linuxdeepin/go-dbus-factory/org.desktopspec.ConfigManager"
+	sensorproxy "github.com/linuxdeepin/go-dbus-factory/system/net.hadess.sensorproxy"
 
 	"github.com/linuxdeepin/dde-daemon/display1/brightness"
 )
@@ -134,7 +135,8 @@ func (abm *AutoBrightnessManager) Initialize(manager *Manager) error {
 		return fmt.Errorf("cannot set brightness for builtin monitor: %s", builtinMonitor.Name)
 	}
 
-	sensorClient := NewSensorProxyClient(manager.sysBus)
+	sensorProxy := sensorproxy.NewSensorProxy(manager.sysBus)
+	sensorClient := NewSensorProxyClient(sensorProxy, manager.dbusDaemon)
 
 	abm.mutex.Lock()
 	abm.sensorClient = sensorClient
@@ -192,7 +194,7 @@ func (abm *AutoBrightnessManager) Start() error {
 	manager := abm.manager
 	abm.mutex.Unlock()
 
-	err := sensorClient.Connect()
+	err := sensorClient.Connect(manager.sysSigLoop)
 	if err != nil {
 		logger.Warning("[AutoBrightness] Failed to connect to sensor proxy:", err)
 		return fmt.Errorf("failed to connect to sensor proxy: %w", err)
@@ -239,7 +241,7 @@ func (abm *AutoBrightnessManager) Stop() error {
 	}
 
 	abm.stopCompensationTimer()
-	abm.restoreSavedBrightness()
+	go abm.restoreSavedBrightness()
 
 	if abm.sensorClient != nil {
 		err := abm.sensorClient.ReleaseLight()
@@ -312,14 +314,6 @@ func (abm *AutoBrightnessManager) SetEnabled(enabled bool) error {
 		return abm.Stop()
 	}
 	return nil
-}
-
-// setSystemAdjusting 设置系统调整标志--用于节能模式或类似功能
-func (abm *AutoBrightnessManager) setSystemAdjusting(adjusting bool) {
-	abm.mutex.Lock()
-	defer abm.mutex.Unlock()
-	abm.systemAdjusting = adjusting
-	logger.Debugf("[AutoBrightness] System adjusting flag set to: %v", adjusting)
 }
 
 // OnManualBrightnessChange 处理手动亮度调节
@@ -537,52 +531,6 @@ func (abm *AutoBrightnessManager) claimLightWithRetry() error {
 		}
 	}
 	return lastErr
-}
-
-// gracefulDegradeService 优雅降级服务
-// 注意：此函数假设调用者已经持有锁
-func (abm *AutoBrightnessManager) gracefulDegradeService() {
-	abm.stopCompensationTimer()
-
-	if abm.sensorClient != nil {
-		err := abm.sensorClient.ReleaseLight()
-		if err != nil {
-			logger.Warning("[AutoBrightness] Failed to release light sensor during degradation:", err)
-		}
-	}
-	abm.running = false
-	abm.supported = false
-}
-
-// recoverService 尝试恢复服务
-func (abm *AutoBrightnessManager) recoverService() error {
-	// 重新初始化传感器连接
-	if abm.sensorClient != nil {
-		err := abm.sensorClient.Connect()
-		if err != nil {
-			return fmt.Errorf("failed to reconnect sensor during recovery: %w", err)
-		}
-		hasLight, err := abm.sensorClient.HasAmbientLight()
-		if err != nil || !hasLight {
-			return fmt.Errorf("ambient light sensor not available during recovery: %w", err)
-		}
-		abm.supported = true
-		if abm.config.Enabled {
-			return abm.Start()
-		}
-	}
-	return nil
-}
-
-// loadConfig 加载配置
-// 注意：此函数假设调用者已经持有锁（如果需要修改 abm.config）
-func (abm *AutoBrightnessManager) loadConfig() error {
-	config, err := abm.getConfig()
-	if err != nil {
-		return err
-	}
-	abm.config = config
-	return nil
 }
 
 // onServiceChange 服务状态变化回调
@@ -970,13 +918,12 @@ func (abm *AutoBrightnessManager) setBrightness(value float64) error {
 		if abm.manager.brightnessTransition != nil {
 			// 使用 SetBrightness 强制启用渐变，忽略全局 enabled 标志
 			err = abm.manager.brightnessTransition.SetBrightness(builtinMonitor.Name, value, true)
-			if err == nil {
-				// 渐变会在完成时自动同步属性，这里不需要再次同步
-				return nil
+			if err != nil {
+				// 如果渐变失败，回退到直接设置
+				logger.Warning("[AutoBrightness] Transition failed, fallback to direct set:", err)
+				return err
 			}
-			// 如果渐变失败，回退到直接设置
-			logger.Warning("[AutoBrightness] Transition failed, fallback to direct set:", err)
-			return err
+			return nil
 		}
 	}
 	// 不强制使用渐变
@@ -1014,23 +961,21 @@ func (abm *AutoBrightnessManager) restoreSavedBrightness() {
 // checkSensorAvailability 检查传感器是否可用（不连接）
 func (abm *AutoBrightnessManager) checkSensorAvailability() error {
 	// 临时连接以检查传感器
-	err := abm.sensorClient.Connect()
+	err := abm.sensorClient.Connect(abm.manager.sysSigLoop)
 	if err != nil {
 		return fmt.Errorf("failed to connect to sensor proxy: %w", err)
 	}
+	// 检查完成后立即断开连接
+	// 实际使用时会在Start()中重新连接
+	defer abm.sensorClient.Disconnect()
 	// 检查是否有环境光传感器
 	hasLight, err := abm.sensorClient.HasAmbientLight()
 	if err != nil {
-		abm.sensorClient.Disconnect()
 		return fmt.Errorf("failed to check ambient light sensor: %w", err)
 	}
 	if !hasLight {
-		abm.sensorClient.Disconnect()
 		return errors.New("no ambient light sensor available")
 	}
-	// 检查完成后立即断开连接
-	// 实际使用时会在Start()中重新连接
-	abm.sensorClient.Disconnect()
 	return nil
 }
 
