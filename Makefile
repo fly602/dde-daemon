@@ -23,7 +23,6 @@ TEST = \
     ${GOPKG_PREFIX}/accounts1/checkers \
     ${GOPKG_PREFIX}/accounts1/logined \
     ${GOPKG_PREFIX}/accounts1/users \
-    ${GOPKG_PREFIX}/audio1 \
     ${GOPKG_PREFIX}/bin/backlight_helper \
     ${GOPKG_PREFIX}/bin/backlight_helper/ddcci \
     ${GOPKG_PREFIX}/bin/dde-greeter-setter \
